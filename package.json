@@ -2,7 +2,7 @@
   "name": "i-expense-tracker",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://misson-infinity.github.io/i-expense-tracker",
+  "homepage": "https://misson-infinity.github.io/I-Expanse-Tracker-/",
   "dependencies": {
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.28",
