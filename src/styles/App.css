@@ -1,1 +1,58 @@
-t
+:root {
+    --primary-color: #6a11cb;
+    --secondary-color: #2575fc;
+    --background-color: #f4f7f6;
+    --text-color: #333;
+    --card-bg: #ffffff;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --income-color: #28a745;
+    --expense-color: #dc3545;
+    --balance-color: #007bff;
+    --font-family: 'Segoe UI', 'Roboto', sans-serif;
+}
+
+body { margin: 0; background-color: var(--background-color); color: var(--text-color); font-family: var(--font-family); transition: background-color 0.3s, color 0.3s; }
+.app-container { display: flex; flex-direction: column; min-height: 100vh; }
+.header { background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); color: white; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 100; }
+.header h1 { margin: 0; font-size: 1.5rem; display: flex; align-items: center; gap: 10px; }
+.header img { height: 30px; }
+.menu-toggle { background: none; border: none; color: white; cursor: pointer; font-size: 2rem; }
+.sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: var(--card-bg); box-shadow: var(--shadow); transition: left 0.3s ease-in-out; z-index: 1000; padding-top: 60px; }
+.sidebar.open { left: 0; }
+.sidebar-nav { list-style-type: none; padding: 0; margin: 0; }
+.sidebar-nav li { padding: 15px 20px; cursor: pointer; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 15px; }
+.sidebar-nav li:hover { background-color: #f0f0f0; }
+main { flex-grow: 1; padding: 2rem; max-width: 800px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+.card { background: var(--card-bg); padding: 1.5rem; border-radius: 10px; box-shadow: var(--shadow); margin-bottom: 2rem; }
+.dashboard-header { text-align: center; margin-bottom: 2rem; }
+.dashboard-header h2 { color: var(--primary-color); }
+.summary { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; text-align: center; }
+.summary-item h4 { margin-bottom: 0.5rem; color: #555; font-size: 1rem; }
+.summary-item p { font-weight: bold; font-size: 1.5rem; }
+.income { color: var(--income-color); }
+.expense { color: var(--expense-color); }
+.balance { color: var(--balance-color); }
+form { display: flex; flex-direction: column; gap: 1rem; }
+input, select, button { padding: 0.8rem; border-radius: 5px; border: 1px solid #ccc; font-size: 1rem; box-sizing: border-box; width: 100%; }
+button { background: var(--secondary-color); color: white; border: none; cursor: pointer; transition: background 0.2s; }
+button:hover { background: var(--primary-color); }
+.transaction-list ul { list-style-type: none; padding: 0; }
+.transaction-list li { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-left: 5px solid; margin-bottom: 0.5rem; background: #fafafa; border-radius: 5px; }
+.transaction-list li span:first-child { display: flex; flex-direction: column; }
+.transaction-list li .amount { font-weight: bold; }
+.transaction-list .income { border-left-color: var(--income-color); }
+.transaction-list .expense { border-left-color: var(--expense-color); }
+.action-buttons button { margin-left: 0.5rem; padding: 0.3rem 0.6rem; font-size: 0.8rem; }
+.edit-btn { background: #ffc107; color: #212529; }
+.delete-btn { background: var(--expense-color); }
+.modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 2000; }
+.modal-content { background: var(--card-bg); padding: 2rem; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); width: 90%; max-width: 500px; }
+.modal-content h2 { margin-top: 0; color: var(--primary-color); }
+.footer { text-align: center; padding: 1rem; background-color: #333; color: white; }
+.developer-page { text-align: center; }
+.developer-page img.dev-photo { width: 150px; height: 150px; border-radius: 50%; margin-bottom: 1rem; object-fit: cover; border: 5px solid var(--primary-color); }
+.contact-info, .social-links { margin-top: 1.5rem; }
+.contact-info p { font-size: 1.1rem; }
+.social-links { display: flex; justify-content: center; gap: 1rem; margin-top: 1rem; }
+.social-links a { color: var(--text-color); font-size: 2.5rem; transition: color 0.3s; }
+.social-links a:hover { color: var(--primary-color); }
