@@ -1,9 +1,0 @@
-body.dark-mode { --background-color: #121212; --text-color: #e0e0e0; --card-bg: #1e1e1e; --shadow: 0 4px 12px rgba(0, 0, 0, 0.4); }
-body.dark-mode .sidebar { background: #2a2a2a; border-right: 1px solid #444; }
-body.dark-mode .sidebar-nav li { border-bottom-color: #444; }
-body.dark-mode .sidebar-nav li:hover { background-color: #333; }
-body.dark-mode .header { background: linear-gradient(90deg, #330867, #30cfd0); }
-body.dark-mode input, body.dark-mode select { background-color: #333; color: #e0e0e0; border-color: #555; }
-body.dark-mode .transaction-list li { background: #2a2a2a; }
-body.dark-mode .social-links a { color: #ccc; }
-body.dark-mode .social-links a:hover { color: #fff; }
