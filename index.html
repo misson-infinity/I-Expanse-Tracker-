@@ -1,1 +1,754 @@
-1
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinity Nest - Smart Mess Management</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lucide-react@latest/dist/lucide-react.js"></script>
+    <script src="https://unpkg.com/lucide-icons@latest/dist/lucide.min.js"></script>
+    
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'Hind Siliguri', 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .view { display: none; }
+        .active-view { display: block; }
+        .sidebar {
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(100%);
+        }
+        .sidebar-open {
+            transform: translateX(0);
+        }
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal {
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+        .modal-visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Main Application Container -->
+    <div id="app-container" class="max-w-7xl mx-auto min-h-screen bg-white shadow-lg">
+
+        <!-- Loading Spinner View -->
+        <div id="view-loading" class="view active-view flex items-center justify-center min-h-screen">
+            <div class="text-center">
+                <div class="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-indigo-600 mx-auto"></div>
+                <h2 class="text-2xl font-bold mt-4 text-gray-700">Infinity Nest লোড হচ্ছে...</h2>
+                <p class="text-gray-500">অনুগ্রহ করে অপেক্ষা করুন</p>
+            </div>
+        </div>
+
+        <!-- Authentication View (Login/Signup) -->
+        <div id="view-auth" class="view">
+            <div class="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
+                <div class="text-center mb-8">
+                    <h1 class="text-5xl font-bold text-indigo-600">Infinity Nest</h1>
+                    <p class="text-gray-600 mt-2">আপনার মেস ম্যানেজমেন্টের স্মার্ট সমাধান</p>
+                </div>
+
+                <div id="auth-forms-container" class="w-full max-w-md bg-white p-8 rounded-xl shadow-md">
+                    <!-- Login Form -->
+                    <div id="login-form-container">
+                        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">লগইন করুন</h2>
+                        <form id="login-form">
+                            <div class="mb-4">
+                                <label for="login-email" class="block text-gray-700 font-medium mb-2">ইমেইল</label>
+                                <input type="email" id="login-email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                            </div>
+                            <div class="mb-6">
+                                <label for="login-password" class="block text-gray-700 font-medium mb-2">পাসওয়ার্ড</label>
+                                <input type="password" id="login-password" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                            </div>
+                            <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 transition-colors">লগইন</button>
+                        </form>
+                        <p class="text-center mt-4 text-gray-600">
+                            অ্যাডমিন? <a href="#" id="show-signup-btn" class="text-indigo-600 hover:underline">নতুন মেস তৈরি করুন</a>
+                        </p>
+                         <p class="text-center mt-2 text-gray-600">
+                            সদস্য? <a href="#" id="show-join-btn" class="text-indigo-600 hover:underline">মেসে যোগ দিন</a>
+                        </p>
+                    </div>
+
+                    <!-- Admin Signup Form -->
+                    <div id="signup-form-container" class="hidden">
+                        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">অ্যাডমিন সাইনআপ</h2>
+                        <form id="signup-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="md:col-span-2">
+                                <label class="block text-gray-700 font-medium mb-1">নাম</label>
+                                <input type="text" id="signup-name" class="w-full px-4 py-2 border rounded-lg" required>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-gray-700 font-medium mb-1">ইমেইল</label>
+                                <input type="email" id="signup-email" class="w-full px-4 py-2 border rounded-lg" required>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-gray-700 font-medium mb-1">পাসওয়ার্ড</label>
+                                <input type="password" id="signup-password" class="w-full px-4 py-2 border rounded-lg" required>
+                            </div>
+                             <div class="md:col-span-2">
+                                <label class="block text-gray-700 font-medium mb-1">ঠিকানা</label>
+                                <input type="text" id="signup-address" class="w-full px-4 py-2 border rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-1">মোবাইল নম্বর</label>
+                                <input type="tel" id="signup-mobile" class="w-full px-4 py-2 border rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-1">লিঙ্গ</label>
+                                <select id="signup-gender" class="w-full px-4 py-2 border rounded-lg">
+                                    <option>পুরুষ</option>
+                                    <option>মহিলা</option>
+                                    <option>অন্যান্য</option>
+                                </select>
+                            </div>
+                            <div class="md:col-span-2">
+                                <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700">সাইনআপ</button>
+                            </div>
+                        </form>
+                        <p class="text-center mt-4 text-gray-600">
+                            অ্যাকাউন্ট আছে? <a href="#" id="show-login-btn-from-signup" class="text-indigo-600 hover:underline">লগইন করুন</a>
+                        </p>
+                    </div>
+                    
+                    <!-- Member Join Form -->
+                    <div id="join-form-container" class="hidden">
+                        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">মেসে যোগ দিন</h2>
+                        <form id="join-form">
+                            <div class="mb-4">
+                                <label class="block text-gray-700 font-medium mb-2">মেস কোড</label>
+                                <input type="text" id="join-mess-code" class="w-full px-4 py-2 border rounded-lg" placeholder="5-digit code" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 font-medium mb-2">আপনার নাম</label>
+                                <input type="text" id="join-name" class="w-full px-4 py-2 border rounded-lg" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 font-medium mb-2">আপনার ইমেইল</label>
+                                <input type="email" id="join-email" class="w-full px-4 py-2 border rounded-lg" required>
+                            </div>
+                             <div class="mb-4">
+                                <label class="block text-gray-700 font-medium mb-2">পাসওয়ার্ড</label>
+                                <input type="password" id="join-password" class="w-full px-4 py-2 border rounded-lg" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 font-medium mb-2">মোবাইল নম্বর</label>
+                                <input type="tel" id="join-mobile" class="w-full px-4 py-2 border rounded-lg" required>
+                            </div>
+                            <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700">আবেদন করুন</button>
+                        </form>
+                        <p class="text-center mt-4 text-gray-600">
+                           <a href="#" id="show-login-btn-from-join" class="text-indigo-600 hover:underline">লগইন পেজে ফিরে যান</a>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        
+        <!-- Create Mess View -->
+        <div id="view-create-mess" class="view p-6">
+             <div class="w-full max-w-md mx-auto bg-white p-8 rounded-xl shadow-md mt-20">
+                <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">আপনার মেস তৈরি করুন</h2>
+                <form id="create-mess-form">
+                    <div class="mb-4">
+                        <label for="mess-name" class="block text-gray-700 font-medium mb-2">মেসের নাম</label>
+                        <input type="text" id="mess-name-input" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                    </div>
+                    <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 transition-colors">তৈরি করুন</button>
+                </form>
+                <div id="mess-code-display" class="hidden mt-6 text-center">
+                    <p class="text-gray-700">আপনার মেস সফলভাবে তৈরি হয়েছে! যোগদানের জন্য এই কোডটি শেয়ার করুন:</p>
+                    <p id="generated-mess-code" class="text-3xl font-bold text-indigo-700 bg-indigo-100 p-3 rounded-lg my-2 tracking-widest"></p>
+                    <button id="go-to-dashboard-btn" class="mt-4 bg-green-600 text-white py-2 px-6 rounded-lg font-semibold hover:bg-green-700">ড্যাশবোর্ডে যান</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pending Approval View -->
+        <div id="view-pending-approval" class="view flex items-center justify-center min-h-screen">
+             <div class="text-center p-8 bg-white rounded-xl shadow-lg">
+                <h2 class="text-3xl font-bold text-yellow-600">আবেদন অপেক্ষমান</h2>
+                <p class="text-gray-600 mt-2">আপনার আবেদনটি অ্যাডমিনের অনুমোদনের জন্য অপেক্ষমান রয়েছে।</p>
+                <p class="text-gray-500 mt-4">অ্যাডমিন অনুমোদন করলে আপনি ড্যাশবোর্ড দেখতে পারবেন।</p>
+                <button id="logout-btn-pending" class="mt-6 bg-red-500 text-white py-2 px-6 rounded-lg font-semibold hover:bg-red-600">লগ আউট</button>
+            </div>
+        </div>
+
+        <!-- Main Dashboard View -->
+        <div id="view-dashboard" class="view relative">
+            <!-- Header -->
+            <header class="bg-white shadow-md p-4 flex justify-between items-center sticky top-0 z-40">
+                <div>
+                    <h1 id="header-mess-name" class="text-2xl font-bold text-indigo-700"></h1>
+                    <p id="header-date" class="text-gray-500"></p>
+                </div>
+                <button id="sidebar-toggle" class="p-2 rounded-md hover:bg-gray-200">
+                    <i data-lucide="menu" class="w-6 h-6 text-gray-700"></i>
+                </button>
+            </header>
+
+            <!-- Main Content -->
+            <main id="main-content" class="p-4 md:p-6 space-y-6">
+                <!-- This will be populated by JS -->
+            </main>
+
+            <!-- Footer -->
+            <footer class="text-center p-4 bg-gray-800 text-white mt-auto">
+                <p>&copy; <span id="footer-year"></span> Infinity Nest | Website Developed by Md Habibur Rahman Mahi</p>
+            </footer>
+
+            <!-- Sidebar -->
+            <div id="sidebar" class="fixed top-0 right-0 h-full w-72 bg-white shadow-lg z-50 sidebar p-4">
+                <div class="flex justify-between items-center border-b pb-4 mb-4">
+                    <h2 class="text-xl font-bold text-indigo-700">মেনু</h2>
+                    <button id="sidebar-close" class="p-2 rounded-md hover:bg-gray-200">
+                        <i data-lucide="x" class="w-6 h-6 text-gray-700"></i>
+                    </button>
+                </div>
+                <nav>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="nav-link block px-4 py-2 rounded-md hover:bg-indigo-100 text-gray-700 font-medium" data-view="home">হোম</a></li>
+                        <li><a href="#" class="nav-link block px-4 py-2 rounded-md hover:bg-indigo-100 text-gray-700 font-medium" data-view="bazaar">বাজার তালিকা</a></li>
+                        <li><a href="#" class="nav-link block px-4 py-2 rounded-md hover:bg-indigo-100 text-gray-700 font-medium" data-view="meals">মিল সংখ্যা</a></li>
+                        <li><a href="#" class="nav-link block px-4 py-2 rounded-md hover:bg-indigo-100 text-gray-700 font-medium" data-view="members">সদস্য তালিকা</a></li>
+                        <li><a href="#" class="nav-link block px-4 py-2 rounded-md hover:bg-indigo-100 text-gray-700 font-medium" data-view="report">খরচ ও হিসাব</a></li>
+                        <li><a href="#" class="nav-link block px-4 py-2 rounded-md hover:bg-indigo-100 text-gray-700 font-medium" data-view="profile">আমার প্রোফাইল</a></li>
+                        <li><a href="#" class="nav-link block px-4 py-2 rounded-md hover:bg-indigo-100 text-gray-700 font-medium" data-view="developer">ডেভেলপার</a></li>
+                        <li id="admin-menu-items" class="hidden pt-4 border-t mt-4">
+                            <span class="px-4 text-sm font-semibold text-gray-500">অ্যাডমিন প্যানেল</span>
+                            <ul class="space-y-2 mt-2">
+                                <li><a href="#" class="nav-link block px-4 py-2 rounded-md hover:bg-indigo-100 text-gray-700 font-medium" data-view="requests">যোগদানের আবেদন</a></li>
+                                <li><a href="#" class="nav-link block px-4 py-2 rounded-md hover:bg-indigo-100 text-gray-700 font-medium" data-view="settings">মেস সেটিংস</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+                <button id="logout-btn" class="w-full mt-8 bg-red-500 text-white py-2 rounded-lg font-semibold hover:bg-red-600">লগ আউট</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Custom Modal for alerts and confirmations -->
+    <div id="custom-modal" class="fixed inset-0 z-50 items-center justify-center hidden">
+        <div class="modal-backdrop fixed inset-0"></div>
+        <div class="modal bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative">
+            <h3 id="modal-title" class="text-xl font-bold text-gray-800"></h3>
+            <p id="modal-message" class="text-gray-600 my-4"></p>
+            <div id="modal-actions" class="text-right space-x-2">
+                <button id="modal-cancel-btn" class="px-4 py-2 rounded-md bg-gray-200 text-gray-800 hover:bg-gray-300">বাতিল</button>
+                <button id="modal-confirm-btn" class="px-4 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700">নিশ্চিত</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            onAuthStateChanged, 
+            signOut 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            doc, 
+            setDoc, 
+            getDoc, 
+            collection, 
+            addDoc, 
+            query, 
+            where, 
+            getDocs,
+            onSnapshot,
+            updateDoc,
+            deleteDoc,
+            serverTimestamp,
+            Timestamp
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- Firebase Configuration ---
+        // IMPORTANT: Replace with your own Firebase project configuration.
+        const firebaseConfig = {
+            apiKey: "AIzaSyCvars41WY81WmVy1Tueo_rrSO90aIv_Gw",
+            authDomain: "try-382fa.firebaseapp.com",
+            projectId: "try-382fa",
+            storageBucket: "try-382fa.firebasestorage.app",
+            messagingSenderId: "952752280975",
+            appId: "1:952752280975:web:9025fc4a4efe34f78be7fa",
+            measurementId: "G-73PLMXERXX"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // --- Global State ---
+        let currentUser = null;
+        let currentUserData = null;
+        let currentMessData = null;
+        let unsubscribeListeners = [];
+
+        // --- UI Elements ---
+        const views = document.querySelectorAll('.view');
+        const mainContent = document.getElementById('main-content');
+        
+        // --- Utility Functions ---
+        const showView = (viewId) => {
+            views.forEach(view => view.classList.remove('active-view'));
+            document.getElementById(viewId).classList.add('active-view');
+        };
+
+        const showModal = (title, message, onConfirm, showCancel = true) => {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').textContent = message;
+            const modal = document.getElementById('custom-modal');
+            const confirmBtn = document.getElementById('modal-confirm-btn');
+            const cancelBtn = document.getElementById('modal-cancel-btn');
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => document.querySelector('.modal').classList.add('modal-visible'), 10);
+
+            const confirmHandler = () => {
+                if(onConfirm) onConfirm();
+                hideModal();
+            };
+            
+            const hideModal = () => {
+                document.querySelector('.modal').classList.remove('modal-visible');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+                confirmBtn.replaceWith(confirmBtn.cloneNode(true)); // Remove old listener
+                cancelBtn.replaceWith(cancelBtn.cloneNode(true));
+            };
+            
+            document.getElementById('modal-confirm-btn').addEventListener('click', confirmHandler);
+            
+            if (showCancel) {
+                cancelBtn.style.display = 'inline-block';
+                cancelBtn.addEventListener('click', hideModal);
+            } else {
+                cancelBtn.style.display = 'none';
+            }
+        };
+
+        const generateMessCode = () => {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = '';
+            for (let i = 0; i < 5; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return code;
+        };
+        
+        // --- Authentication Logic ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                const userDocRef = doc(db, "users", user.uid);
+                const userDoc = await getDoc(userDocRef);
+
+                if (userDoc.exists()) {
+                    currentUserData = { id: user.uid, ...userDoc.data() };
+                    
+                    if (currentUserData.status === 'pending') {
+                        showView('view-pending-approval');
+                        return;
+                    }
+                    
+                    if (currentUserData.messId) {
+                        await loadDashboard();
+                    } else if (currentUserData.role === 'admin') {
+                        showView('view-create-mess');
+                    }
+                } else {
+                    // This case might happen if user record is deleted but auth remains.
+                    await signOut(auth);
+                }
+            } else {
+                currentUser = null;
+                currentUserData = null;
+                currentMessData = null;
+                unsubscribeAll();
+                showView('view-auth');
+            }
+            lucide.createIcons();
+        });
+        
+        // --- Main Dashboard Loading ---
+        async function loadDashboard() {
+            if (!currentUserData || !currentUserData.messId) {
+                showModal('ত্রুটি', 'মেসের তথ্য পাওয়া যায়নি।', () => signOut(auth), false);
+                return;
+            }
+            
+            const messDocRef = doc(db, "messes", currentUserData.messId);
+            const messDoc = await getDoc(messDocRef);
+            
+            if (messDoc.exists()) {
+                currentMessData = { id: messDoc.id, ...messDoc.data() };
+                setupDashboardUI();
+                navigateTo('home');
+                showView('view-dashboard');
+                if (currentUserData.role === 'admin') {
+                    document.getElementById('admin-menu-items').classList.remove('hidden');
+                }
+            } else {
+                showModal('ত্রুটি', 'মেসটি খুঁজে পাওয়া যায়নি।', () => signOut(auth), false);
+            }
+        }
+        
+        function setupDashboardUI() {
+            document.getElementById('header-mess-name').textContent = currentMessData.name;
+            const today = new Date();
+            const dateOptions = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+            document.getElementById('header-date').textContent = today.toLocaleDateString('bn-BD', dateOptions);
+            document.getElementById('footer-year').textContent = today.getFullYear();
+        }
+
+        // --- Navigation ---
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const viewName = e.target.dataset.view;
+                navigateTo(viewName);
+                // Close sidebar on mobile after navigation
+                if (window.innerWidth < 768) {
+                    document.getElementById('sidebar').classList.remove('sidebar-open');
+                }
+            });
+        });
+
+        function navigateTo(viewName) {
+            unsubscribeAll();
+            mainContent.innerHTML = '<div class="flex justify-center items-center p-10"><div class="w-8 h-8 border-2 border-dashed rounded-full animate-spin border-indigo-600"></div></div>';
+            
+            // Highlight active link
+            navLinks.forEach(l => l.classList.remove('bg-indigo-100', 'text-indigo-700'));
+            const activeLink = document.querySelector(`.nav-link[data-view="${viewName}"]`);
+            if(activeLink) activeLink.classList.add('bg-indigo-100', 'text-indigo-700');
+
+            switch(viewName) {
+                case 'home': renderHomePage(); break;
+                // Add other cases here
+            }
+            lucide.createIcons();
+        }
+        
+        function unsubscribeAll() {
+            unsubscribeListeners.forEach(unsub => unsub());
+            unsubscribeListeners = [];
+        }
+        
+        // --- Page Render Functions ---
+        
+        async function renderHomePage() {
+            mainContent.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 space-y-6">
+                        <!-- Bazaar Duty -->
+                        <div class="bg-white p-6 rounded-xl shadow">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">আজকের বাজার</h2>
+                            <div id="bazaar-duty-today" class="text-center p-4 bg-green-50 rounded-lg">
+                                <p class="text-gray-600">আজকের বাজারের দায়িত্বে আছেন:</p>
+                                <p class="text-2xl font-bold text-green-700 mt-1">লোড হচ্ছে...</p>
+                            </div>
+                        </div>
+
+                        <!-- Daily Meal Tracker -->
+                        <div class="bg-white p-6 rounded-xl shadow">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">আজকের মিল</h2>
+                            <div id="meal-tracker" class="flex justify-around items-center">
+                                <!-- Meal checkboxes will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-1 space-y-6">
+                        <!-- Notice Board -->
+                        <div class="bg-white p-6 rounded-xl shadow">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">নোটিশ বোর্ড</h2>
+                            <div id="notice-board-admin" class="hidden">
+                                <form id="add-notice-form" class="space-y-3">
+                                    <input type="text" id="notice-title" placeholder="নোটিশের শিরোনাম" class="w-full px-3 py-2 border rounded-lg" required>
+                                    <textarea id="notice-content" placeholder="নোটিশের বিবরণ" rows="3" class="w-full px-3 py-2 border rounded-lg" required></textarea>
+                                    <button type="submit" class="w-full bg-indigo-500 text-white py-2 rounded-lg font-semibold hover:bg-indigo-600">পোস্ট করুন</button>
+                                </form>
+                            </div>
+                            <div id="notice-list" class="mt-4 space-y-4 max-h-96 overflow-y-auto">
+                                <!-- Notices will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            if (currentUserData.role === 'admin') {
+                document.getElementById('notice-board-admin').classList.remove('hidden');
+                document.getElementById('add-notice-form').addEventListener('submit', handleAddNotice);
+            }
+            
+            loadBazaarDuty();
+            loadMealTracker();
+            loadNotices();
+            lucide.createIcons();
+        }
+
+        // --- Data Handling Functions ---
+
+        function loadBazaarDuty() {
+            // This is a simplified version. A real implementation would have a schedule.
+            // For now, let's just show the admin's name as a placeholder.
+            const dutyContainer = document.getElementById('bazaar-duty-today').querySelector('p:last-child');
+            const q = query(collection(db, "users"), where("messId", "==", currentMessData.id), where("role", "==", "admin"));
+            getDocs(q).then(snapshot => {
+                if (!snapshot.empty) {
+                    const admin = snapshot.docs[0].data();
+                    dutyContainer.textContent = admin.name;
+                } else {
+                    dutyContainer.textContent = 'এখনো সেট করা হয়নি';
+                }
+            });
+        }
+        
+        async function loadMealTracker() {
+            const mealTrackerContainer = document.getElementById('meal-tracker');
+            const todayStr = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+            const mealDocId = `${currentUser.uid}_${todayStr}`;
+            const mealDocRef = doc(db, "meals", mealDocId);
+            
+            const mealDoc = await getDoc(mealDocRef);
+            let mealData = mealDoc.exists() ? mealDoc.data() : { morning: false, noon: false, night: false };
+
+            mealTrackerContainer.innerHTML = `
+                <label class="flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" data-meal="morning" class="meal-checkbox h-6 w-6 rounded text-indigo-600 focus:ring-indigo-500" ${mealData.morning ? 'checked' : ''}>
+                    <span class="font-medium text-gray-700">সকাল (0.5)</span>
+                </label>
+                <label class="flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" data-meal="noon" class="meal-checkbox h-6 w-6 rounded text-indigo-600 focus:ring-indigo-500" ${mealData.noon ? 'checked' : ''}>
+                    <span class="font-medium text-gray-700">দুপুর (1)</span>
+                </label>
+                <label class="flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" data-meal="night" class="meal-checkbox h-6 w-6 rounded text-indigo-600 focus:ring-indigo-500" ${mealData.night ? 'checked' : ''}>
+                    <span class="font-medium text-gray-700">রাত (1)</span>
+                </label>
+            `;
+
+            document.querySelectorAll('.meal-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', async (e) => {
+                    const mealType = e.target.dataset.meal;
+                    const isChecked = e.target.checked;
+                    
+                    const currentMealDoc = await getDoc(mealDocRef);
+                    const currentMealData = currentMealDoc.exists() ? currentMealDoc.data() : {};
+                    
+                    const updatedMeals = {
+                        ...currentMealData,
+                        [mealType]: isChecked,
+                        userId: currentUser.uid,
+                        messId: currentMessData.id,
+                        date: Timestamp.fromDate(new Date(todayStr))
+                    };
+                    
+                    const total = (updatedMeals.morning ? 0.5 : 0) + (updatedMeals.noon ? 1 : 0) + (updatedMeals.night ? 1 : 0);
+                    updatedMeals.total = total;
+
+                    await setDoc(mealDocRef, updatedMeals, { merge: true });
+                });
+            });
+        }
+        
+        function loadNotices() {
+            const noticeList = document.getElementById('notice-list');
+            const q = query(collection(db, "notices"), where("messId", "==", currentMessData.id));
+            
+            const unsub = onSnapshot(q, (snapshot) => {
+                if (snapshot.empty) {
+                    noticeList.innerHTML = '<p class="text-gray-500 text-center">কোনো নোটিশ নেই।</p>';
+                    return;
+                }
+                noticeList.innerHTML = '';
+                snapshot.docs.forEach(doc => {
+                    const notice = doc.data();
+                    const noticeEl = document.createElement('div');
+                    noticeEl.className = 'border p-4 rounded-lg bg-gray-50';
+                    noticeEl.innerHTML = `
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-gray-800">${notice.title}</h3>
+                            ${currentUserData.role === 'admin' ? `<button class="delete-notice-btn text-red-500 hover:text-red-700" data-id="${doc.id}"><i data-lucide="trash-2" class="w-4 h-4"></i></button>` : ''}
+                        </div>
+                        <p class="text-gray-600 mt-1">${notice.content}</p>
+                        <p class="text-xs text-gray-400 mt-2">${notice.createdAt.toDate().toLocaleString('bn-BD')}</p>
+                    `;
+                    noticeList.prepend(noticeEl);
+                });
+                lucide.createIcons();
+                
+                document.querySelectorAll('.delete-notice-btn').forEach(btn => {
+                   btn.addEventListener('click', (e) => {
+                       const noticeId = e.currentTarget.dataset.id;
+                       showModal('নিশ্চিতকরণ', 'আপনি কি এই নোটিশটি মুছে ফেলতে চান?', () => {
+                           deleteDoc(doc(db, "notices", noticeId));
+                       });
+                   });
+                });
+            });
+            unsubscribeListeners.push(unsub);
+        }
+        
+        async function handleAddNotice(e) {
+            e.preventDefault();
+            const title = document.getElementById('notice-title').value;
+            const content = document.getElementById('notice-content').value;
+            
+            await addDoc(collection(db, "notices"), {
+                messId: currentMessData.id,
+                title,
+                content,
+                authorId: currentUser.uid,
+                authorName: currentUserData.name,
+                createdAt: serverTimestamp()
+            });
+            
+            e.target.reset();
+        }
+
+        // --- Event Listeners ---
+        
+        // Auth form toggling
+        document.getElementById('show-signup-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('login-form-container').classList.add('hidden');
+            document.getElementById('join-form-container').classList.add('hidden');
+            document.getElementById('signup-form-container').classList.remove('hidden');
+        });
+        document.getElementById('show-join-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('login-form-container').classList.add('hidden');
+            document.getElementById('signup-form-container').classList.add('hidden');
+            document.getElementById('join-form-container').classList.remove('hidden');
+        });
+        document.getElementById('show-login-btn-from-signup').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('signup-form-container').classList.add('hidden');
+            document.getElementById('login-form-container').classList.remove('hidden');
+        });
+        document.getElementById('show-login-btn-from-join').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('join-form-container').classList.add('hidden');
+            document.getElementById('login-form-container').classList.remove('hidden');
+        });
+
+        // Auth form submissions
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            // Get other fields...
+            
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                
+                await setDoc(doc(db, "users", user.uid), {
+                    name: name,
+                    email: email,
+                    role: 'admin',
+                    createdAt: serverTimestamp(),
+                    // Save other fields...
+                });
+                // No need to call loadDashboard, onAuthStateChanged will handle it.
+            } catch (error) {
+                showModal('সাইনআপ ত্রুটি', error.message, null, false);
+            }
+        });
+        
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (error) {
+                showModal('লগইন ত্রুটি', 'ভুল ইমেইল অথবা পাসওয়ার্ড।', null, false);
+            }
+        });
+
+        document.getElementById('create-mess-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const messName = document.getElementById('mess-name-input').value;
+            const messCode = generateMessCode();
+            
+            try {
+                const messRef = await addDoc(collection(db, "messes"), {
+                    name: messName,
+                    code: messCode,
+                    adminId: currentUser.uid,
+                    createdAt: serverTimestamp()
+                });
+                
+                await updateDoc(doc(db, "users", currentUser.uid), {
+                    messId: messRef.id
+                });
+                
+                document.getElementById('create-mess-form').classList.add('hidden');
+                document.getElementById('generated-mess-code').textContent = messCode;
+                document.getElementById('mess-code-display').classList.remove('hidden');
+                
+            } catch(error) {
+                showModal('ত্রুটি', 'মেস তৈরিতে সমস্যা হয়েছে: ' + error.message, null, false);
+            }
+        });
+
+        document.getElementById('go-to-dashboard-btn').addEventListener('click', async () => {
+            // Re-fetch user data to get the new messId
+            const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+            currentUserData = { id: currentUser.uid, ...userDoc.data() };
+            await loadDashboard();
+        });
+
+        // Logout buttons
+        document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+        document.getElementById('logout-btn-pending').addEventListener('click', () => signOut(auth));
+
+        // Sidebar toggle
+        document.getElementById('sidebar-toggle').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.add('sidebar-open');
+        });
+        document.getElementById('sidebar-close').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('sidebar-open');
+        });
+
+        // --- Initial Load ---
+        showView('view-loading');
+        lucide.createIcons();
+    </script>
+</body>
+</html>
