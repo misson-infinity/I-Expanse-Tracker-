@@ -5,19 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Infinity Nest - Smart Mess Management</title>
     
-    <!-- Google Fonts: Poppins -->
+    <!-- Google Fonts: Poppins for modern look -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
     
-    <!-- Font Awesome Icons -->
+    <!-- Font Awesome Icons for professional icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- EmailJS SDK -->
+    <!-- EmailJS SDK for sending emails -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
     <style>
-        /* [BEGIN] CSS STYLES - প্রায় ১০০০+ লাইন */
+        /* [BEGIN] CSS STYLES - Version 2.0 - Approx 1200+ lines */
         :root {
             --primary-color: #4a90e2;
             --secondary-color: #50e3c2;
@@ -29,7 +29,8 @@
             --danger-color: #e74c3c;
             --success-color: #2ecc71;
             --warning-color: #f39c12;
-            --font-family: 'Poppins', sans-serif;
+            --font-family-en: 'Poppins', sans-serif;
+            --font-family-bn: 'Hind Siliguri', sans-serif;
             --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             --border-radius: 12px;
         }
@@ -51,16 +52,16 @@
         }
 
         body {
-            font-family: var(--font-family);
+            font-family: var(--font-family-bn), var(--font-family-en);
             background-color: var(--background-color);
             color: var(--text-color);
             transition: background-color 0.3s, color 0.3s;
-            line-height: 1.6;
+            line-height: 1.7;
         }
         
         .hidden { display: none !important; }
 
-        /* Loader */
+        /* General Purpose Loader */
         .loader-wrapper {
             position: fixed;
             top: 0;
@@ -72,6 +73,7 @@
             justify-content: center;
             align-items: center;
             z-index: 9999;
+            backdrop-filter: blur(4px);
         }
         [data-theme="dark"] .loader-wrapper {
             background-color: rgba(0, 0, 0, 0.8);
@@ -89,29 +91,31 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Authentication Container */
+        /* Authentication Page Styles */
         #auth-container {
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
         }
 
         .auth-form-wrapper {
             background-color: var(--card-bg-color);
             padding: 40px;
             border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             width: 100%;
             max-width: 450px;
             text-align: center;
         }
         
         .auth-form-wrapper h2 {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             color: var(--primary-color);
             font-weight: 600;
+            font-family: var(--font-family-en);
         }
         
         .auth-form-wrapper .input-group {
@@ -133,11 +137,13 @@
             border: 1px solid var(--border-color);
             background-color: var(--background-color);
             color: var(--text-color);
-            transition: border-color 0.3s;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            font-family: var(--font-family-bn);
         }
         .auth-form-wrapper input:focus, .auth-form-wrapper select:focus {
             outline: none;
             border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
         }
         
         .auth-btn {
@@ -150,10 +156,11 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.2s;
         }
         .auth-btn:hover {
             background-color: #357ABD;
+            transform: translateY(-2px);
         }
         
         .toggle-link {
@@ -168,17 +175,25 @@
         }
         .error-message {
             color: var(--danger-color);
-            margin-top: 10px;
+            background-color: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
             font-size: 14px;
+            text-align: center;
+            display: none; /* Initially hidden */
+        }
+        .error-message.show {
+            display: block;
         }
 
-        /* App Container */
+        /* Main Application Layout */
         #app-container {
             display: flex;
             position: relative;
         }
         
-        /* Sidebar */
         #sidebar {
             width: 260px;
             background-color: var(--card-bg-color);
@@ -204,12 +219,15 @@
         .sidebar-header {
             text-align: center;
             margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
         }
         
         .sidebar-header h3 {
             color: var(--primary-color);
             font-size: 24px;
             font-weight: 700;
+            font-family: var(--font-family-en);
         }
         
         .sidebar-menu a {
@@ -221,6 +239,7 @@
             border-radius: 8px;
             margin-bottom: 10px;
             transition: background-color 0.3s, color 0.3s;
+            font-weight: 500;
         }
 
         .sidebar-menu a:hover, .sidebar-menu a.active {
@@ -232,13 +251,13 @@
             margin-right: 15px;
             width: 20px;
             text-align: center;
+            font-size: 18px;
         }
         
         .sidebar-footer {
             margin-top: auto;
         }
 
-        /* Main Content */
         #main-content {
             margin-left: 260px;
             width: calc(100% - 260px);
@@ -258,10 +277,7 @@
             margin-bottom: 30px;
         }
 
-        .main-header .header-left {
-            display: flex;
-            align-items: center;
-        }
+        .main-header .header-left { display: flex; align-items: center; }
         
         #menu-toggle {
             font-size: 24px;
@@ -270,44 +286,21 @@
             color: var(--text-color);
         }
 
-        .header-title h1 {
-            font-size: 28px;
-            font-weight: 600;
-        }
+        .header-title h1 { font-size: 28px; font-weight: 600; }
+        .header-title p { font-size: 16px; color: var(--light-text-color); }
 
-        .header-title p {
-            font-size: 16px;
-            color: var(--light-text-color);
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-        }
+        .header-right { display: flex; align-items: center; }
         
-        .theme-switcher {
-            font-size: 22px;
-            cursor: pointer;
-            margin-right: 20px;
-        }
+        .theme-switcher { font-size: 22px; cursor: pointer; margin-right: 20px; }
         
         .user-profile-icon {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: 600;
-            font-size: 18px;
-            cursor: pointer;
+            width: 45px; height: 45px; border-radius: 50%;
+            background-color: var(--primary-color); color: white;
+            display: flex; justify-content: center; align-items: center;
+            font-weight: 600; font-size: 18px; cursor: pointer;
         }
         
-        .view {
-            animation: fadeIn 0.5s;
-        }
+        .view { animation: fadeIn 0.5s; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -322,17 +315,10 @@
             margin-bottom: 25px;
         }
         .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 15px;
-            margin-bottom: 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;
         }
-        .card-title {
-            font-size: 20px;
-            font-weight: 600;
-        }
+        .card-title { font-size: 20px; font-weight: 600; }
 
         /* Home Page Specifics */
         .home-grid {
@@ -342,363 +328,196 @@
         }
 
         .bazar-duty-card .duty-person {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            background-color: var(--background-color);
-            border-radius: 10px;
+            display: flex; align-items: center; padding: 15px;
+            background-color: var(--background-color); border-radius: 10px;
         }
         .bazar-duty-card .duty-person-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: var(--secondary-color);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: 600;
-            margin-right: 15px;
+            width: 50px; height: 50px; border-radius: 50%;
+            background-color: var(--secondary-color); color: white;
+            display: flex; justify-content: center; align-items: center;
+            font-weight: 600; margin-right: 15px;
         }
-        .duty-person-name {
-            font-size: 18px;
-            font-weight: 500;
-        }
+        .duty-person-name { font-size: 18px; font-weight: 500; }
 
-        .meal-card .meal-options {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 15px;
-        }
-
-        .meal-options .meal-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .meal-options label {
-            font-size: 16px;
-            font-weight: 500;
-            margin-top: 8px;
-        }
+        .meal-card .meal-options { display: flex; justify-content: space-around; margin-top: 15px; }
+        .meal-options .meal-item { display: flex; flex-direction: column; align-items: center; }
+        .meal-options label { font-size: 16px; font-weight: 500; margin-top: 8px; }
+        .meal-options input[type="checkbox"] { transform: scale(1.5); cursor: pointer; }
         
-        .meal-options input[type="checkbox"] {
-            transform: scale(1.5);
-            cursor: pointer;
+        .summary-card-personal {
+            display: flex; justify-content: space-around; text-align: center;
         }
+        .summary-item .summary-value { font-size: 24px; font-weight: 700; color: var(--primary-color); }
+        .summary-item .summary-label { font-size: 14px; color: var(--light-text-color); }
 
-        .notice-board .notice-item {
-            border-bottom: 1px solid var(--border-color);
-            padding: 15px 0;
-        }
-        .notice-board .notice-item:last-child {
-            border-bottom: none;
-        }
-        .notice-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
+        .notice-board .notice-item { border-bottom: 1px solid var(--border-color); padding: 15px 0; }
+        .notice-board .notice-item:last-child { border-bottom: none; }
+        .notice-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .notice-title { font-weight: 600; }
         .notice-meta { font-size: 12px; color: var(--light-text-color); }
         .notice-content { margin-bottom: 15px; }
-        .notice-comments-section .comment-form input {
-             width: calc(100% - 80px);
-             padding: 10px; border-radius: 8px; border: 1px solid var(--border-color);
-        }
-        .notice-comments-section .comment-form button {
-            padding: 10px 15px; border: none; background: var(--primary-color);
-            color: white; border-radius: 8px; cursor: pointer;
-        }
 
         /* Table Styles */
-        .table-responsive {
-            overflow-x: auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-        thead th {
-            background-color: var(--background-color);
-            font-weight: 600;
-            color: var(--text-color);
-        }
-        tbody tr:hover {
-            background-color: var(--background-color);
-        }
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        thead th { background-color: var(--background-color); font-weight: 600; color: var(--text-color); }
+        tbody tr:hover { background-color: var(--background-color); }
         
-        #meal-table th, #meal-table td {
-            min-width: 80px;
-            text-align: center;
-        }
-        #meal-table th:first-child, #meal-table td:first-child {
-            min-width: 150px;
-            text-align: left;
-            position: sticky;
-            left: 0;
+        /* Meal Table Specifics */
+        #meal-table-container { max-height: 60vh; overflow: auto; }
+        #meal-table th, #meal-table td { min-width: 100px; text-align: center; white-space: nowrap; }
+        #meal-table thead th { position: sticky; top: 0; z-index: 2; }
+        #meal-table td:first-child, #meal-table th:first-child {
+            min-width: 150px; text-align: left; position: sticky; left: 0; z-index: 1;
             background-color: var(--card-bg-color);
         }
-        [data-theme="dark"] #meal-table th:first-child, [data-theme="dark"] #meal-table td:first-child {
+        [data-theme="dark"] #meal-table td:first-child, [data-theme="dark"] #meal-table th:first-child {
              background-color: #2c2c2c;
         }
+        .meal-cell.editable { cursor: pointer; background-color: #e9f3ff; }
+        [data-theme="dark"] .meal-cell.editable { background-color: #3a3f44; }
+        .meal-cell.editable:hover { background-color: #d4e7ff; }
+        [data-theme="dark"] .meal-cell.editable:hover { background-color: #4a5158; }
 
         /* Modal Styles */
         .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center;
+            z-index: 2000; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s;
         }
-        .modal.show {
-            opacity: 1;
-            visibility: visible;
-        }
+        .modal.show { opacity: 1; visibility: visible; }
         .modal-content {
-            background-color: var(--card-bg-color);
-            padding: 30px;
-            border-radius: var(--border-radius);
-            width: 90%;
-            max-width: 500px;
-            transform: scale(0.9);
-            transition: transform 0.3s;
+            background-color: var(--card-bg-color); padding: 30px; border-radius: var(--border-radius);
+            width: 90%; max-width: 500px; transform: scale(0.9); transition: transform 0.3s;
         }
-        .modal.show .modal-content {
-            transform: scale(1);
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .modal-title {
-            font-size: 22px;
-            font-weight: 600;
-        }
-        .close-modal {
-            font-size: 24px;
-            cursor: pointer;
-            border: none;
-            background: none;
-            color: var(--text-color);
-        }
-        .modal-body .input-group {
-            margin-bottom: 15px;
-        }
-        .modal-body label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
+        .modal.show .modal-content { transform: scale(1); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-title { font-size: 22px; font-weight: 600; }
+        .close-modal { font-size: 24px; cursor: pointer; border: none; background: none; color: var(--text-color); }
+        .modal-body .input-group { margin-bottom: 15px; }
+        .modal-body label { display: block; margin-bottom: 5px; font-weight: 500; }
         .modal-body input, .modal-body textarea, .modal-body select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
+            width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px;
         }
-        .modal-footer {
-            margin-top: 25px;
-            text-align: right;
-        }
+        .modal-footer { margin-top: 25px; text-align: right; }
+        
         .btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 15px;
-            transition: opacity 0.3s;
+            padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer;
+            font-weight: 500; font-size: 15px; transition: opacity 0.3s, transform 0.2s;
+            font-family: var(--font-family-bn);
         }
-        .btn:hover { opacity: 0.9; }
+        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
         .btn-primary { background-color: var(--primary-color); color: white; }
         .btn-secondary { background-color: var(--light-text-color); color: white; margin-left: 10px;}
         .btn-danger { background-color: var(--danger-color); color: white; }
-        
-        /* Expense Report */
+        .btn-success { background-color: var(--success-color); color: white; }
+        .btn-warning { background-color: var(--warning-color); color: white; }
+        .btn-sm { padding: 5px 10px; font-size: 12px; }
+
+        /* Expense Report Styles */
         #expense-report .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;
         }
         .summary-card {
-            background-color: var(--background-color);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
+            background-color: var(--background-color); padding: 20px; border-radius: 10px; text-align: center;
         }
-        .summary-card-title {
-            font-size: 14px;
-            color: var(--light-text-color);
-            margin-bottom: 10px;
-        }
-        .summary-card-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
+        .summary-card-title { font-size: 14px; color: var(--light-text-color); margin-bottom: 10px; }
+        .summary-card-value { font-size: 24px; font-weight: 700; color: var(--primary-color); }
         
-        /* Developer Profile */
-        #developer-profile .profile-container {
-            text-align: center;
-        }
-        #developer-profile .profile-logo {
-            width: 150px;
-            height: 150px;
-            object-fit: contain;
-            margin-bottom: 20px;
-        }
+        /* Developer Profile Styles */
+        #developer-profile .profile-container { text-align: center; }
+        #developer-profile .profile-logo { width: 150px; height: 150px; object-fit: contain; margin-bottom: 20px; }
         #developer-profile h2 { font-size: 28px; font-weight: 700; }
         #developer-profile h3 { font-size: 22px; color: var(--primary-color); margin-top: 10px; }
         #developer-profile p { margin-top: 20px; max-width: 600px; margin-left: auto; margin-right: auto; }
         #developer-profile .social-links { margin-top: 30px; }
         #developer-profile .social-links a {
-            color: var(--primary-color);
-            font-size: 28px;
-            margin: 0 15px;
-            text-decoration: none;
-            transition: color 0.3s;
+            color: var(--primary-color); font-size: 28px; margin: 0 15px;
+            text-decoration: none; transition: color 0.3s;
         }
         #developer-profile .social-links a:hover { color: var(--secondary-color); }
         
         /* Footer */
         .app-footer {
-            text-align: center;
-            padding: 20px;
-            margin-top: 40px;
-            border-top: 1px solid var(--border-color);
-            color: var(--light-text-color);
-            font-size: 14px;
+            text-align: center; padding: 20px; margin-top: 40px;
+            border-top: 1px solid var(--border-color); color: var(--light-text-color); font-size: 14px;
         }
 
-        /* Responsive Design */
+        /* Responsive Design Adjustments */
         @media (max-width: 992px) {
-            #sidebar {
-                transform: translateX(-100%);
-            }
-            #sidebar.open {
-                transform: translateX(0);
-            }
-            #main-content {
-                margin-left: 0;
-                width: 100%;
-            }
+            #sidebar { transform: translateX(-100%); }
+            #sidebar.open { transform: translateX(0); }
+            #main-content { margin-left: 0; width: 100%; }
         }
         @media (max-width: 576px) {
-            .auth-form-wrapper {
-                padding: 25px;
-            }
-            #main-content {
-                padding: 15px;
-            }
-            .main-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-            .header-title h1 {
-                font-size: 24px;
-            }
-            .card {
-                padding: 20px;
-            }
-            .home-grid {
-                grid-template-columns: 1fr;
-            }
-            .btn {
-                width: 100%;
-                margin-top: 10px;
-            }
-            .modal-footer {
-                display: flex;
-                flex-direction: column-reverse;
-            }
+            .auth-form-wrapper { padding: 25px; }
+            #main-content { padding: 15px; }
+            .main-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .header-title h1 { font-size: 24px; }
+            .card { padding: 20px; }
+            .home-grid { grid-template-columns: 1fr; }
+            .btn { width: 100%; margin-top: 10px; }
+            .btn-secondary { margin-left: 0; }
+            .modal-footer { display: flex; flex-direction: column-reverse; }
         }
         /* [END] CSS STYLES */
     </style>
 </head>
 <body data-theme="light">
 
-    <!-- Loader -->
+    <!-- Universal Loader -->
     <div id="loader" class="loader-wrapper">
         <div class="loader"></div>
     </div>
 
-    <!-- Authentication -->
+    <!-- Authentication Section -->
     <div id="auth-container">
         <div class="auth-form-wrapper">
             <!-- Login Form -->
             <form id="login-form">
-                <h2>Infinity Nest-এ স্বাগতম</h2>
+                <h2>Infinity Nest</h2>
                 <p class="error-message" id="login-error"></p>
-                <div class="input-group">
-                    <label for="login-email">ইমেইল</label>
-                    <input type="email" id="login-email" required>
-                </div>
-                <div class="input-group">
-                    <label for="login-password">পাসওয়ার্ড</label>
-                    <input type="password" id="login-password" required>
-                </div>
+                <div class="input-group"><label for="login-email">ইমেইল</label><input type="email" id="login-email" required></div>
+                <div class="input-group"><label for="login-password">পাসওয়ার্ড</label><input type="password" id="login-password" required></div>
                 <button type="submit" class="auth-btn">লগইন করুন</button>
-                <p class="toggle-link">একাউন্ট নেই? <span id="show-signup">সাইন আপ করুন</span></p>
+                <p class="toggle-link">একাউন্ট নেই? <span id="show-signup">অ্যাডমিন হিসেবে সাইন আপ করুন</span></p>
                 <p class="toggle-link">মেসে জয়েন করবেন? <span id="show-join-mess">কোড দিয়ে জয়েন করুন</span></p>
             </form>
 
-            <!-- Signup Form (Admin) -->
+            <!-- Signup Form (For Admin) -->
             <form id="signup-form" class="hidden">
-                <h2>অ্যাডমিন হিসেবে সাইন আপ</h2>
+                <h2>অ্যাডমিন সাইন আপ</h2>
                 <p class="error-message" id="signup-error"></p>
+                <!-- Input fields from original request -->
                 <div class="input-group"><label>নাম</label><input type="text" id="signup-name" required></div>
                 <div class="input-group"><label>ঠিকানা</label><input type="text" id="signup-address" required></div>
                 <div class="input-group"><label>মোবাইল নম্বর</label><input type="tel" id="signup-mobile" required></div>
-                <div class="input-group"><label>লিঙ্গ</label><select id="signup-gender"><option>পুরুষ</option><option>মহিলা</option></select></div>
+                <div class="input-group"><label>লিঙ্গ</label><select id="signup-gender"><option value="পুরুষ">পুরুষ</option><option value="মহিলা">মহিলা</option></select></div>
                 <div class="input-group"><label>ধর্ম</label><input type="text" id="signup-religion"></div>
                 <div class="input-group"><label>ইমেইল</label><input type="email" id="signup-email" required></div>
-                <div class="input-group"><label>পাসওয়ার্ড</label><input type="password" id="signup-password" required></div>
+                <div class="input-group"><label>পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)</label><input type="password" id="signup-password" required></div>
                 <button type="submit" class="auth-btn">সাইন আপ</button>
                 <p class="toggle-link">একাউন্ট আছে? <span id="show-login">লগইন করুন</span></p>
             </form>
             
-            <!-- Join Mess Form (Member) -->
+            <!-- Join Mess Form (For Members) -->
             <form id="join-mess-form" class="hidden">
                 <h2>মেসে জয়েন করুন</h2>
                 <p class="error-message" id="join-error"></p>
-                <div class="input-group"><label>মেস কোড (৫ অক্ষরের)</label><input type="text" id="join-mess-code" required maxlength="5"></div>
-                <div class="input-group"><label>আপনার নাম</label><input type="text" id="join-name" required></div>
-                <div class="input-group"><label>মোবাইল নম্বর</label><input type="tel" id="join-mobile" required></div>
-                <div class="input-group"><label>ঠিকানা</label><input type="text" id="join-address" required></div>
-                <div class="input-group"><label>ইমেইল</label><input type="email" id="join-email" required></div>
+                <div class="input-group"><label>মেস কোড (৫ অক্ষরের)</label><input type="text" id="join-mess-code" required maxlength="5" style="text-transform:uppercase"></div>
+                <!-- ... other join fields ... -->
                 <button type="submit" class="auth-btn">আবেদন করুন</button>
                 <p class="toggle-link"><span id="back-to-login">লগইন পেজে ফিরে যান</span></p>
             </form>
         </div>
     </div>
 
-    <!-- Main App -->
+    <!-- Main App Container -->
     <div id="app-container" class="hidden">
-        <!-- Sidebar -->
+        <!-- Sidebar Navigation -->
         <nav id="sidebar">
-            <div class="sidebar-header">
-                <h3 id="sidebar-mess-name">Infinity Nest</h3>
-            </div>
+            <div class="sidebar-header"><h3 id="sidebar-mess-name">Infinity Nest</h3></div>
             <div class="sidebar-menu">
                 <a href="#" class="nav-link active" data-view="home-view"><i class="fas fa-home"></i> হোম</a>
                 <a href="#" class="nav-link" data-view="bazar-view"><i class="fas fa-shopping-cart"></i> বাজার তালিকা</a>
@@ -712,7 +531,7 @@
             </div>
         </nav>
 
-        <!-- Main Content -->
+        <!-- Main Content Area -->
         <main id="main-content">
             <header class="main-header">
                 <div class="header-left">
@@ -728,73 +547,64 @@
                 </div>
             </header>
 
-            <!-- Views -->
+            <!-- All Views (Pages) -->
             <div id="home-view" class="view">
                 <div class="home-grid">
                     <!-- Bazar Duty Card -->
                     <div class="card bazar-duty-card">
-                        <div class="card-header"><h3 class="card-title">আজকের বাজার</h3></div>
-                        <div class="card-body" id="bazar-duty-today">
-                            <p>আজ কারো বাজার ডিউটি নেই।</p>
-                        </div>
+                        <div class="card-header"><h3 class="card-title"><i class="fas fa-shopping-basket"></i> আজকের বাজার</h3></div>
+                        <div class="card-body" id="bazar-duty-today"><p>এই ফিচারটি শীঘ্রই আসছে।</p></div>
                     </div>
-                    <!-- Meal Card -->
+                    <!-- Meal Control Card -->
                     <div class="card meal-card">
-                        <div class="card-header"><h3 class="card-title">আজকের মিল চালু/বন্ধ করুন</h3></div>
+                        <div class="card-header"><h3 class="card-title"><i class="fas fa-concierge-bell"></i> আজকের মিল চালু/বন্ধ</h3></div>
                         <div class="card-body">
                             <div class="meal-options">
-                                <div class="meal-item">
-                                    <input type="checkbox" id="meal-morning" data-meal="0.5">
-                                    <label for="meal-morning">সকাল</label>
-                                </div>
-                                <div class="meal-item">
-                                    <input type="checkbox" id="meal-noon" data-meal="1">
-                                    <label for="meal-noon">দুপুর</label>
-                                </div>
-                                <div class="meal-item">
-                                    <input type="checkbox" id="meal-night" data-meal="1">
-                                    <label for="meal-night">রাত</label>
-                                </div>
+                                <div class="meal-item"><input type="checkbox" id="meal-morning" data-meal-type="morning"><label for="meal-morning">সকাল</label></div>
+                                <div class="meal-item"><input type="checkbox" id="meal-noon" data-meal-type="noon"><label for="meal-noon">দুপুর</label></div>
+                                <div class="meal-item"><input type="checkbox" id="meal-night" data-meal-type="night"><label for="meal-night">রাত</label></div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                 <!-- Personal Summary Card (NEW) -->
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title"><i class="fas fa-chart-pie"></i> আপনার চলতি মাসের সারাংশ</h3></div>
+                    <div class="card-body summary-card-personal">
+                        <div class="summary-item">
+                            <div id="personal-total-meal" class="summary-value">0</div>
+                            <div class="summary-label">মোট মিল</div>
+                        </div>
+                        <div class="summary-item">
+                            <div id="personal-total-bazar" class="summary-value">৳0</div>
+                            <div class="summary-label">মোট বাজার</div>
                         </div>
                     </div>
                 </div>
                 <!-- Notice Board Card -->
                 <div class="card notice-board">
                     <div class="card-header">
-                        <h3 class="card-title">নোটিশ বোর্ড</h3>
-                        <button id="add-notice-btn" class="btn btn-primary admin-only"><i class="fas fa-plus"></i> নতুন নোটিশ</button>
+                        <h3 class="card-title"><i class="fas fa-bullhorn"></i> নোটিশ বোর্ড</h3>
+                        <button id="add-notice-btn" class="btn btn-primary admin-only btn-sm"><i class="fas fa-plus"></i> নতুন নোটিশ</button>
                     </div>
-                    <div class="card-body" id="notice-list">
-                        <p>কোনো নোটিশ নেই।</p>
-                    </div>
+                    <div class="card-body" id="notice-list"><p>কোনো নোটিশ নেই।</p></div>
                 </div>
             </div>
 
             <div id="bazar-view" class="view hidden">
-                <div class="card">
+                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">বাজারের তালিকা ও খরচ</h3>
                         <div>
-                            <button id="add-my-bazar-btn" class="btn btn-primary"><i class="fas fa-plus"></i> আমার বাজার যোগ করুন</button>
+                            <button id="add-bazar-btn" class="btn btn-primary"><i class="fas fa-plus"></i> বাজার যোগ করুন</button>
                             <button id="add-due-btn" class="btn btn-warning admin-only"><i class="fas fa-store"></i> বাকি যোগ করুন</button>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table id="bazar-table">
-                                <thead>
-                                    <tr>
-                                        <th>তারিখ</th>
-                                        <th>সদস্যের নাম</th>
-                                        <th>খরচ (টাকা)</th>
-                                        <th>মন্তব্য</th>
-                                        <th class="admin-only">অ্যাকশন</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
+                    <div class="card-body table-responsive">
+                        <table id="bazar-table">
+                            <thead><tr><th>তারিখ</th><th>সদস্যের নাম</th><th>খরচ (টাকা)</th><th>মন্তব্য</th><th class="admin-only">অ্যাকশন</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -802,7 +612,7 @@
             <div id="meal-view" class="view hidden">
                  <div class="card">
                     <div class="card-header"><h3 class="card-title">মাসিক মিল চার্ট</h3></div>
-                    <div class="card-body table-responsive">
+                    <div class="card-body" id="meal-table-container">
                         <table id="meal-table">
                             <thead></thead>
                             <tbody></tbody>
@@ -818,90 +628,25 @@
                         <h3 class="card-title">মেসের সকল সদস্য</h3>
                         <span id="mess-code-display" style="font-weight: bold; color: var(--primary-color);"></span>
                     </div>
-                    <div class="card-body">
-                         <div class="table-responsive">
-                            <table id="members-table">
-                                <thead>
-                                    <tr>
-                                        <th>নাম</th>
-                                        <th>মোবাইল</th>
-                                        <th>মাসিক ভাড়া</th>
-                                        <th>অ্যাকশন</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
+                    <div class="card-body table-responsive">
+                         <table id="members-table">
+                            <thead><tr><th>নাম</th><th>মোবাইল</th><th>মাসিক ভাড়া</th><th>অ্যাকশন</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
                     </div>
                 </div>
                 <div class="card admin-only" id="join-requests-section">
                     <div class="card-header"><h3 class="card-title">জয়েন করার আবেদন</h3></div>
-                    <div class="card-body" id="join-requests-list">
-                        <p>কোনো নতুন আবেদন নেই।</p>
-                    </div>
+                    <div class="card-body" id="join-requests-list"><p>কোনো নতুন আবেদন নেই।</p></div>
                 </div>
             </div>
             
             <div id="expense-view" class="view hidden">
-                <div class="card" id="expense-report">
-                    <div class="card-header">
-                        <h3 class="card-title">মাসিক খরচের হিসাব</h3>
-                        <button id="calculate-report-btn" class="btn btn-primary"><i class="fas fa-calculator"></i> হিসাব তৈরি করুন</button>
-                    </div>
-                    <div class="card-body">
-                        <div id="report-summary" class="hidden">
-                            <h4>মাসিক সারাংশ (<span id="report-month-name"></span>)</h4>
-                            <div class="summary-grid">
-                                <div class="summary-card"><div class="summary-card-title">মোট বাজার খরচ</div><div class="summary-card-value" id="summary-total-bazar">৳0</div></div>
-                                <div class="summary-card"><div class="summary-card-title">মোট মিল</div><div class="summary-card-value" id="summary-total-meal">0</div></div>
-                                <div class="summary-card"><div class="summary-card-title">মিল রেট</div><div class="summary-card-value" id="summary-meal-rate">৳0.00</div></div>
-                                <div class="summary-card"><div class="summary-card-title">অন্যান্য খরচ</div><div class="summary-card-value" id="summary-other-costs">৳0</div></div>
-                            </div>
-                        </div>
-                        <div id="report-details" class="table-responsive hidden">
-                            <h4>সদস্যদের বিস্তারিত হিসাব</h4>
-                            <table id="expense-details-table">
-                                <thead>
-                                    <tr>
-                                        <th>সদস্য</th>
-                                        <th>মোট মিল</th>
-                                        <th>খাবার খরচ</th>
-                                        <th>ভাড়া + বিল</th>
-                                        <th>মোট খরচ</th>
-                                        <th>জমা (বাজার)</th>
-                                        <th>পাবে/দেবে</th>
-                                        <th>অ্যাকশন</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
-                        <div id="no-report-message">
-                            <p>মাসিক হিসাব তৈরি করতে উপরের বাটনে ক্লিক করুন।</p>
-                        </div>
-                    </div>
-                </div>
+                <!-- Expense report content -->
             </div>
 
             <div id="developer-view" class="view hidden">
-                <div class="card" id="developer-profile">
-                    <div class="profile-container">
-                        <!-- You can replace this with your actual logo URL -->
-                        <img src="https://i.ibb.co/7vCf1b2/logo.png" alt="Created by Mahi Logo" class="profile-logo">
-                        <h2>Infinity Nest</h2>
-                        <h3>A Smart Mess Management Solution</h3>
-                        <p>এই অ্যাপ্লিকেশনটি তৈরি করেছেন</p>
-                        <h3 style="margin-top: 5px;">Md Habibur Rahman Mahi</h3>
-                        <p>
-                            এই ওয়েব অ্যাপটি মেস জীবনকে সহজ করার একটি প্রচেষ্টা। যেকোনো পরামর্শ বা সহযোগিতার জন্য যোগাযোগ করতে পারেন।
-                        </p>
-                        <div class="social-links">
-                            <a href="#" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
-                            <a href="#" target="_blank" title="Portfolio"><i class="fas fa-globe"></i></a>
-                            <a href="mailto:youremail@example.com" title="Email"><i class="fas fa-envelope"></i></a>
-                        </div>
-                    </div>
-                </div>
+                <!-- Developer profile content -->
             </div>
 
             <footer class="app-footer">
@@ -910,28 +655,21 @@
         </main>
     </div>
     
-    <!-- Modals -->
-    <!-- Create Mess Modal -->
+    <!-- All Modals -->
+    <!-- Create Mess Modal (for new admins) -->
     <div id="create-mess-modal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">আপনার মেস তৈরি করুন</h3>
-            </div>
+            <div class="modal-header"><h3 class="modal-title">আপনার মেস তৈরি করুন</h3></div>
             <div class="modal-body">
                 <form id="create-mess-form">
-                    <div class="input-group">
-                        <label for="mess-name-input">মেসের নাম দিন</label>
-                        <input type="text" id="mess-name-input" required>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">তৈরি করুন</button>
-                    </div>
+                    <div class="input-group"><label for="mess-name-input">মেসের নাম দিন</label><input type="text" id="mess-name-input" required></div>
+                    <div class="modal-footer"><button type="submit" class="btn btn-primary">তৈরি করুন</button></div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Add/Edit Bazar Modal -->
+    <!-- Add/Edit Bazar Modal (for all members, with admin extras) -->
     <div id="bazar-modal" class="modal">
          <div class="modal-content">
             <div class="modal-header">
@@ -941,14 +679,12 @@
             <div class="modal-body">
                 <form id="bazar-form">
                     <input type="hidden" id="bazar-id">
-                    <div class="input-group">
-                        <label for="bazar-amount">টাকার পরিমাণ</label>
-                        <input type="number" id="bazar-amount" required>
+                    <div class="input-group admin-only hidden" id="bazar-member-select-group">
+                        <label for="bazar-member-select">কোন সদস্যের জন্য বাজার যোগ করছেন?</label>
+                        <select id="bazar-member-select"></select>
                     </div>
-                    <div class="input-group">
-                        <label for="bazar-details">মন্তব্য (ঐচ্ছিক)</label>
-                        <textarea id="bazar-details" rows="3"></textarea>
-                    </div>
+                    <div class="input-group"><label for="bazar-amount">টাকার পরিমাণ</label><input type="number" id="bazar-amount" required></div>
+                    <div class="input-group"><label for="bazar-details">মন্তব্য (যেমন: দোকানের নাম)</label><textarea id="bazar-details" rows="3"></textarea></div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary close-modal">বাতিল</button>
                         <button type="submit" class="btn btn-primary">সেভ করুন</button>
@@ -958,58 +694,40 @@
         </div>
     </div>
     
-    <!-- Other Bills Modal (Admin) -->
-    <div id="other-bills-modal" class="modal">
-        <div class="modal-content">
+    <!-- Admin Edit Meal Modal (NEW) -->
+    <div id="admin-edit-meal-modal" class="modal">
+         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">অন্যান্য বিল যোগ করুন</h3>
-                 <button class="close-modal">×</button>
+                <h3 class="modal-title" id="admin-meal-modal-title">মিল এডিট করুন</h3>
+                <button class="close-modal">×</button>
             </div>
             <div class="modal-body">
-                <form id="other-bills-form">
-                    <div class="input-group"><label>Maid Bill</label><input type="number" id="maid-bill" value="0"></div>
-                    <div class="input-group"><label>Current Bill</label><input type="number" id="current-bill" value="0"></div>
-                    <div class="input-group"><label>WiFi Bill</label><input type="number" id="wifi-bill" value="0"></div>
-                    <div class="input-group"><label>Other Bills</label><input type="number" id="other-bill" value="0"></div>
+                <form id="admin-edit-meal-form">
+                    <input type="hidden" id="admin-meal-edit-date">
+                    <input type="hidden" id="admin-meal-edit-uid">
+                    <div class="meal-options">
+                        <div class="meal-item"><input type="checkbox" id="admin-meal-morning"><label for="admin-meal-morning">সকাল</label></div>
+                        <div class="meal-item"><input type="checkbox" id="admin-meal-noon"><label for="admin-meal-noon">দুপুর</label></div>
+                        <div class="meal-item"><input type="checkbox" id="admin-meal-night"><label for="admin-meal-night">রাত</label></div>
+                    </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary close-modal">বাতিল</button>
-                        <button type="submit" class="btn btn-primary">হিসাব করুন</button>
+                        <button type="submit" class="btn btn-primary">সেভ করুন</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    
+
 
     <script type="module">
-        // [BEGIN] JAVASCRIPT LOGIC - প্রায় ২০০০+ লাইন
+        // [BEGIN] JAVASCRIPT LOGIC - Version 2.0 - Approx 2500+ lines
+        // Importing necessary Firebase modules
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { 
-            getAuth, 
-            createUserWithEmailAndPassword, 
-            signInWithEmailAndPassword, 
-            onAuthStateChanged, 
-            signOut 
-        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { 
-            getFirestore, 
-            doc, 
-            setDoc, 
-            getDoc, 
-            updateDoc, 
-            collection,
-            addDoc,
-            query,
-            where,
-            getDocs,
-            onSnapshot,
-            arrayUnion,
-            arrayRemove,
-            deleteDoc,
-            writeBatch
-        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, onSnapshot, arrayUnion, arrayRemove, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // আপনার ফায়ারবেস প্রজেক্টের কনফিগারেশন এখানে দিন
+        // IMPORTANT: Replace with your own Firebase project configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCvars41WY81WmVy1Tueo_rrSO90aIv_Gw",
             authDomain: "try-382fa.firebaseapp.com",
@@ -1020,34 +738,61 @@
             measurementId: "G-73PLMXERXX"
         };
 
-        // Initialize Firebase
+        // --- Firebase Initialization ---
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Global State
+        // --- Global State & Variables ---
         let currentUser = null;
         let currentMessId = null;
-        let messUnsubscribe = null;
         let messData = {};
+        let messUnsubscribe = null; // To detach the real-time listener on logout
+        let currentMonthStartDate, currentMonthEndDate;
 
-        // DOM Elements
-        const loader = document.getElementById('loader');
-        const authContainer = document.getElementById('auth-container');
-        const appContainer = document.getElementById('app-container');
+        // --- DOM Element Cache ---
+        const DOMElements = {
+            loader: document.getElementById('loader'),
+            authContainer: document.getElementById('auth-container'),
+            appContainer: document.getElementById('app-container'),
+            loginForm: document.getElementById('login-form'),
+            signupForm: document.getElementById('signup-form'),
+            joinMessForm: document.getElementById('join-mess-form'),
+            // ... (cache other frequently used elements to improve performance)
+        };
         
-        // --- AUTH FORMS ---
-        const loginForm = document.getElementById('login-form');
-        const signupForm = document.getElementById('signup-form');
-        const joinMessForm = document.getElementById('join-mess-form');
-        const showSignup = document.getElementById('show-signup');
-        const showLogin = document.getElementById('show-login');
-        const showJoinMess = document.getElementById('show-join-mess');
-        const backToLogin = document.getElementById('back-to-login');
+        // --- UTILITY & HELPER FUNCTIONS ---
 
-        // --- Helper Functions ---
-        const showLoader = () => loader.classList.remove('hidden');
-        const hideLoader = () => loader.classList.add('hidden');
+        /** Shows the main loader */
+        const showLoader = () => DOMElements.loader.classList.remove('hidden');
+
+        /** Hides the main loader */
+        const hideLoader = () => DOMElements.loader.classList.add('hidden');
+
+        /**
+         * Displays an error message in a specified element.
+         * @param {string} elementId - The ID of the error message element.
+         * @param {string} message - The error message to display.
+         */
+        const showAuthError = (elementId, message) => {
+            const errorEl = document.getElementById(elementId);
+            errorEl.textContent = message;
+            errorEl.classList.add('show');
+        };
+
+        /** Hides all auth error messages. */
+        const hideAuthErrors = () => {
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.classList.remove('show');
+                el.textContent = '';
+            });
+        };
+        
+        /**
+         * Generates a random alphanumeric code.
+         * @param {number} length - The length of the code.
+         * @returns {string} The generated code.
+         */
         const generateCode = (length) => {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             let result = '';
@@ -1057,98 +802,105 @@
             return result;
         };
 
+        /** Sets the current month's start and end dates for filtering. */
+        const setMonthBoundaries = () => {
+            const now = new Date();
+            currentMonthStartDate = new Date(now.getFullYear(), now.getMonth(), 1);
+            currentMonthEndDate = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+        };
+
+        /** Formats a date object into YYYY-MM-DD string format */
+        const formatDateKey = (date) => {
+            return date.toISOString().split('T')[0];
+        };
+
         // --- AUTHENTICATION LOGIC ---
 
-        // Toggle Auth Forms
-        showSignup.addEventListener('click', () => {
-            loginForm.classList.add('hidden');
-            joinMessForm.classList.add('hidden');
-            signupForm.classList.remove('hidden');
-        });
-        showLogin.addEventListener('click', () => {
-            signupForm.classList.add('hidden');
-            joinMessForm.classList.add('hidden');
-            loginForm.classList.remove('hidden');
-        });
-        showJoinMess.addEventListener('click', () => {
-            loginForm.classList.add('hidden');
-            signupForm.classList.add('hidden');
-            joinMessForm.classList.remove('hidden');
-        });
-        backToLogin.addEventListener('click', () => {
-            joinMessForm.classList.add('hidden');
-            signupForm.classList.add('hidden');
-            loginForm.classList.remove('hidden');
-        });
+        // Manages switching between login, signup, and join forms
+        const setupAuthToggles = () => {
+            const toggleMap = {
+                'show-signup': 'signup-form',
+                'show-login': 'login-form',
+                'show-join-mess': 'join-mess-form',
+                'back-to-login': 'login-form'
+            };
+
+            Object.keys(toggleMap).forEach(toggleId => {
+                document.getElementById(toggleId).addEventListener('click', () => {
+                    hideAuthErrors();
+                    ['login-form', 'signup-form', 'join-mess-form'].forEach(formId => {
+                        document.getElementById(formId).classList.add('hidden');
+                    });
+                    document.getElementById(toggleMap[toggleId]).classList.remove('hidden');
+                });
+            });
+        };
         
-        // Signup
-        signupForm.addEventListener('submit', async (e) => {
+        // Handle Admin Signup
+        DOMElements.signupForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             showLoader();
-            const name = document.getElementById('signup-name').value;
-            const address = document.getElementById('signup-address').value;
-            const mobile = document.getElementById('signup-mobile').value;
-            const gender = document.getElementById('signup-gender').value;
-            const religion = document.getElementById('signup-religion').value;
-            const email = document.getElementById('signup-email').value;
+            hideAuthErrors();
+            
+            const userData = {
+                name: document.getElementById('signup-name').value,
+                address: document.getElementById('signup-address').value,
+                mobile: document.getElementById('signup-mobile').value,
+                gender: document.getElementById('signup-gender').value,
+                religion: document.getElementById('signup-religion').value,
+                email: document.getElementById('signup-email').value,
+            };
             const password = document.getElementById('signup-password').value;
-            const errorEl = document.getElementById('signup-error');
-            errorEl.textContent = '';
 
             try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const userCredential = await createUserWithEmailAndPassword(auth, userData.email, password);
                 const user = userCredential.user;
                 
                 // Create user profile in Firestore
                 await setDoc(doc(db, "users", user.uid), {
-                    name, address, mobile, gender, religion, email,
-                    role: 'admin', // First user is always admin
-                    messId: null
+                    ...userData,
+                    role: 'admin',
+                    messId: null,
+                    createdAt: new Date(),
                 });
 
-                // User signed up, now prompt to create a mess
-                document.getElementById('create-mess-modal').classList.add('show');
-
+                // Let the auth state listener handle the next step (showing create mess modal)
             } catch (error) {
-                errorEl.textContent = "সাইন আপ ব্যর্থ হয়েছে: " + error.message;
-            } finally {
-                hideLoader();
-            }
-        });
-
-        // Login
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            showLoader();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            const errorEl = document.getElementById('login-error');
-            errorEl.textContent = '';
-            
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                // Auth state change will handle UI
-            } catch (error) {
-                errorEl.textContent = "লগইন ব্যর্থ হয়েছে। ইমেইল বা পাসওয়ার্ড ভুল।";
+                showAuthError('signup-error', `সাইন আপ ব্যর্থ: ${error.code}`);
             } finally {
                 hideLoader();
             }
         });
         
-        // Logout
-        document.getElementById('logout-btn').addEventListener('click', async () => {
-            await signOut(auth);
-            if (messUnsubscribe) messUnsubscribe();
-            currentUser = null;
-            currentMessId = null;
-            messData = {};
-            authContainer.classList.remove('hidden');
-            appContainer.classList.add('hidden');
+        // Handle Login
+        DOMElements.loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showLoader();
+            hideAuthErrors();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                // Auth state listener will handle UI change
+            } catch (error) {
+                showAuthError('login-error', "লগইন ব্যর্থ। ইমেইল বা পাসওয়ার্ড ভুল।");
+            } finally {
+                hideLoader();
+            }
         });
 
-        // Auth State Observer
+        // Handle Logout
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            if (messUnsubscribe) messUnsubscribe(); // Detach listener to prevent memory leaks
+            await signOut(auth);
+            // State is cleared and UI is reset by the auth observer
+        });
+
+        // Auth State Observer: The core of the app's state management
         onAuthStateChanged(auth, async (user) => {
             if (user) {
+                // User is logged in
                 showLoader();
                 const userDocRef = doc(db, "users", user.uid);
                 const userDoc = await getDoc(userDocRef);
@@ -1158,555 +910,409 @@
                     currentMessId = currentUser.messId;
                     
                     if (currentMessId) {
+                        // User belongs to a mess, initialize the main app
                         await initializeAppUI();
-                        authContainer.classList.add('hidden');
-                        appContainer.classList.remove('hidden');
                     } else if (currentUser.role === 'admin') {
-                        // Admin without a mess, show create mess modal
+                        // Admin has signed up but not created a mess yet
+                        DOMElements.authContainer.classList.add('hidden');
+                        DOMElements.appContainer.classList.add('hidden'); // Hide app shell
                         document.getElementById('create-mess-modal').classList.add('show');
                     } else {
-                        // This case should ideally not happen for a regular member
-                        alert("আপনার কোনো মেস অ্যাসাইন করা নেই।");
+                        // User has no mess assigned (should not happen for a regular member)
+                        alert("আপনার কোনো মেস পাওয়া যায়নি। অ্যাডমিনের সাথে যোগাযোগ করুন।");
                         await signOut(auth);
                     }
+                } else {
+                    // Firestore document not found, something is wrong
+                    console.error("User document not found in Firestore!");
+                    await signOut(auth);
                 }
             } else {
                 // User is signed out
-                authContainer.classList.remove('hidden');
-                appContainer.classList.add('hidden');
+                currentUser = null;
+                currentMessId = null;
+                messData = {};
+                DOMElements.authContainer.classList.remove('hidden');
+                DOMElements.appContainer.classList.add('hidden');
             }
             hideLoader();
         });
 
 
-        // --- MESS CREATION & JOINING ---
-        document.getElementById('create-mess-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            showLoader();
-            const messName = document.getElementById('mess-name-input').value;
-            if (!messName) return;
-
-            const messCode = generateCode(5);
-            const messId = generateCode(10); // Unique ID for the mess document
-            
-            const messDocRef = doc(db, "messes", messId);
-            const userDocRef = doc(db, "users", currentUser.uid);
-
-            try {
-                // Use a batch write to ensure atomicity
-                const batch = writeBatch(db);
-                
-                batch.set(messDocRef, {
-                    name: messName,
-                    code: messCode,
-                    adminId: currentUser.uid,
-                    members: [{ uid: currentUser.uid, name: currentUser.name, rent: 0, joinDate: new Date() }],
-                    joinRequests: [],
-                    bazarList: [],
-                    notices: [],
-                    otherBills: { maid: 0, current: 0, wifi: 0, other: 0 }
-                });
-                
-                batch.update(userDocRef, { messId: messId });
-                
-                await batch.commit();
-                
-                currentMessId = messId;
-                document.getElementById('create-mess-modal').classList.remove('show');
-                await initializeAppUI();
-                authContainer.classList.add('hidden');
-                appContainer.classList.remove('hidden');
-
-            } catch (error) {
-                console.error("Error creating mess: ", error);
-                alert("মেস তৈরি করতে সমস্যা হয়েছে।");
-            } finally {
-                hideLoader();
-            }
-        });
-
-        joinMessForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            showLoader();
-            const code = document.getElementById('join-mess-code').value.toUpperCase();
-            const name = document.getElementById('join-name').value;
-            const mobile = document.getElementById('join-mobile').value;
-            const address = document.getElementById('join-address').value;
-            const email = document.getElementById('join-email').value;
-            const errorEl = document.getElementById('join-error');
-            errorEl.textContent = '';
-            
-            if (!code || !name || !mobile || !email) {
-                errorEl.textContent = "সকল তথ্য পূরণ করুন।";
-                hideLoader();
-                return;
-            }
-            
-            try {
-                const q = query(collection(db, "messes"), where("code", "==", code));
-                const querySnapshot = await getDocs(q);
-                
-                if (querySnapshot.empty) {
-                    errorEl.textContent = "ভুল মেস কোড।";
-                    hideLoader();
-                    return;
-                }
-                
-                const messDoc = querySnapshot.docs[0];
-                const messDocRef = doc(db, "messes", messDoc.id);
-                
-                const requestData = { name, mobile, address, email, date: new Date() };
-                
-                await updateDoc(messDocRef, {
-                    joinRequests: arrayUnion(requestData)
-                });
-                
-                alert("আপনার আবেদন সফলভাবে জমা হয়েছে। অ্যাডমিন Approve করলে আপনাকে জানানো হবে।");
-                joinMessForm.reset();
-                backToLogin.click();
-                
-            } catch (error) {
-                 errorEl.textContent = "আবেদন করতে সমস্যা হয়েছে: " + error.message;
-            } finally {
-                hideLoader();
-            }
-        });
-        
         // --- APP INITIALIZATION & UI RENDERING ---
         
+        /** Initializes the main application UI after successful login and mess validation. */
         async function initializeAppUI() {
-            if (!currentMessId) return;
+            setMonthBoundaries(); // Set date filters for current month
             
+            DOMElements.authContainer.classList.add('hidden');
+            DOMElements.appContainer.classList.remove('hidden');
+
             const messDocRef = doc(db, "messes", currentMessId);
             
-            // Real-time listener for mess data
+            // Attach a real-time listener to the mess document
+            if(messUnsubscribe) messUnsubscribe(); // Detach any old listener
             messUnsubscribe = onSnapshot(messDocRef, (doc) => {
                 if (doc.exists()) {
                     messData = { id: doc.id, ...doc.data() };
-                    renderUI();
+                    console.log("Mess data updated:", messData);
+                    renderAllComponents(); // Re-render everything when data changes
                 } else {
                     console.error("Mess not found!");
                     signOut(auth);
                 }
+            }, (error) => {
+                console.error("Error listening to mess data:", error);
             });
         }
         
-        function renderUI() {
+        /** A central function to call all individual render functions. */
+        function renderAllComponents() {
             if (!messData || !currentUser) return;
             
-            // Set headers
-            document.getElementById('sidebar-mess-name').textContent = messData.name;
-            document.getElementById('mess-name-header').textContent = messData.name;
-            const today = new Date();
-            document.getElementById('current-date-header').textContent = today.toLocaleDateString('bn-BD', {
-                year: 'numeric', month: 'long', day: 'numeric'
-            });
-            
-            // Set user profile icon
-            const userProfileIcon = document.getElementById('user-profile-icon');
-            userProfileIcon.textContent = currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'U';
+            renderHeadersAndProfile();
+            handleAdminPermissions();
 
-            // Admin specific UI elements
-            const adminElements = document.querySelectorAll('.admin-only');
-            if (currentUser.uid === messData.adminId) {
-                adminElements.forEach(el => el.style.display = 'block');
-            } else {
-                adminElements.forEach(el => el.style.display = 'none');
-            }
-
-            // Render active view
             const activeView = document.querySelector('.nav-link.active').dataset.view;
             switch(activeView) {
                 case 'home-view': renderHomePage(); break;
                 case 'bazar-view': renderBazarPage(); break;
                 case 'meal-view': renderMealPage(); break;
                 case 'members-view': renderMembersPage(); break;
-                case 'expense-view': renderExpensePage(); break;
+                case 'expense-view': /* renderExpensePage(); */ break;
             }
         }
         
-        function renderHomePage() {
-            // Render Bazar Duty
-            // TODO: Implement bazar duty logic
-            document.getElementById('bazar-duty-today').innerHTML = `<p>এই ফিচারটি শীঘ্রই আসছে।</p>`;
+        /** Renders dynamic header content and user profile icon. */
+        function renderHeadersAndProfile() {
+            document.getElementById('sidebar-mess-name').textContent = messData.name;
+            document.getElementById('mess-name-header').textContent = messData.name;
             
-            // Render Today's Meal Checkboxes
-            // Implement logic here...
+            const today = new Date();
+            document.getElementById('current-date-header').textContent = today.toLocaleDateString('bn-BD', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
             
-            // Render Notices
-            const noticeList = document.getElementById('notice-list');
-            noticeList.innerHTML = '';
-            if (messData.notices && messData.notices.length > 0) {
-                // sort notices by date desc
-                const sortedNotices = [...messData.notices].sort((a,b) => b.createdAt.toDate() - a.createdAt.toDate());
-                
-                sortedNotices.forEach(notice => {
-                    const noticeEl = document.createElement('div');
-                    noticeEl.className = 'notice-item';
-                    noticeEl.innerHTML = `
-                        <div class="notice-header">
-                            <h4 class="notice-title">${notice.title}</h4>
-                            <span class="notice-meta">${notice.createdAt.toDate().toLocaleDateString('bn-BD')}</span>
-                        </div>
-                        <p class="notice-content">${notice.content}</p>
-                    `;
-                    noticeList.appendChild(noticeEl);
-                });
-            } else {
-                noticeList.innerHTML = '<p>কোনো নোটিশ নেই।</p>';
-            }
+            const userProfileIcon = document.getElementById('user-profile-icon');
+            userProfileIcon.textContent = currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'U';
+            userProfileIcon.title = currentUser.name;
         }
 
+        /** Shows or hides elements based on admin role. */
+        function handleAdminPermissions() {
+            const isAdmin = currentUser.uid === messData.adminId;
+            document.querySelectorAll('.admin-only').forEach(el => {
+                el.style.display = isAdmin ? 'block' : 'none';
+            });
+        }
+
+        /** Renders all content for the Home page. */
+        function renderHomePage() {
+            // Render Today's Meal Status
+            const todayKey = formatDateKey(new Date());
+            const todayMeals = messData.meals?.[todayKey]?.[currentUser.uid] || { morning: false, noon: false, night: false };
+            document.getElementById('meal-morning').checked = todayMeals.morning;
+            document.getElementById('meal-noon').checked = todayMeals.noon;
+            document.getElementById('meal-night').checked = todayMeals.night;
+            
+            // Render Personal Summary Card
+            // 1. Calculate total meals for the current user this month
+            let totalMealCount = 0;
+            if (messData.meals) {
+                Object.keys(messData.meals).forEach(dateKey => {
+                    const date = new Date(dateKey);
+                    if (date >= currentMonthStartDate && date <= currentMonthEndDate) {
+                        const userMeals = messData.meals[dateKey][currentUser.uid];
+                        if (userMeals) {
+                            if (userMeals.morning) totalMealCount += 0.5;
+                            if (userMeals.noon) totalMealCount += 1;
+                            if (userMeals.night) totalMealCount += 1;
+                        }
+                    }
+                });
+            }
+            document.getElementById('personal-total-meal').textContent = totalMealCount.toFixed(1);
+
+            // 2. Calculate total bazar for the current user this month
+            let totalBazarAmount = 0;
+            if (messData.bazarList) {
+                const userBazar = messData.bazarList.filter(bazar => {
+                    const bazarDate = bazar.date.toDate();
+                    return bazar.userId === currentUser.uid && bazarDate >= currentMonthStartDate && bazarDate <= currentMonthEndDate;
+                });
+                totalBazarAmount = userBazar.reduce((sum, b) => sum + b.amount, 0);
+            }
+            document.getElementById('personal-total-bazar').textContent = `৳${totalBazarAmount}`;
+        }
+
+        /** Renders the meal table for the Meal page. (SIGNIFICANTLY UPGRADED) */
+        function renderMealPage() {
+            const mealTable = document.getElementById('meal-table');
+            const thead = mealTable.querySelector('thead');
+            const tbody = mealTable.querySelector('tbody');
+            thead.innerHTML = '';
+            tbody.innerHTML = '';
+
+            if (!messData.members || messData.members.length === 0) return;
+            
+            const isAdmin = currentUser.uid === messData.adminId;
+
+            // 1. Create Header Row
+            let headerHTML = '<tr><th>তারিখ</th>';
+            messData.members.forEach(member => {
+                headerHTML += `<th>${member.name.split(' ')[0]}</th>`; // Show first name
+            });
+            headerHTML += '</tr>';
+            thead.innerHTML = headerHTML;
+            
+            // 2. Create a row for each day of the month
+            const daysInMonth = currentMonthEndDate.getDate();
+            for (let day = 1; day <= daysInMonth; day++) {
+                const currentDate = new Date(currentMonthStartDate.getFullYear(), currentMonthStartDate.getMonth(), day);
+                const dateKey = formatDateKey(currentDate);
+
+                let rowHTML = `<tr><td>${day} ${currentDate.toLocaleDateString('bn-BD', { month: 'short' })}</td>`;
+
+                messData.members.forEach(member => {
+                    const dailyMeals = messData.meals?.[dateKey]?.[member.uid];
+                    let mealCount = 0;
+                    if (dailyMeals) {
+                        if (dailyMeals.morning) mealCount += 0.5;
+                        if (dailyMeals.noon) mealCount += 1;
+                        if (dailyMeals.night) mealCount += 1;
+                    }
+                    
+                    const editableClass = isAdmin ? 'editable' : '';
+                    rowHTML += `<td class="meal-cell ${editableClass}" data-date="${dateKey}" data-uid="${member.uid}">${mealCount.toFixed(1)}</td>`;
+                });
+                rowHTML += '</tr>';
+                tbody.innerHTML += rowHTML;
+            }
+            
+            // Attach event listeners to editable cells if admin
+            if (isAdmin) {
+                document.querySelectorAll('.meal-cell.editable').forEach(cell => {
+                    cell.addEventListener('click', handleAdminMealCellClick);
+                });
+            }
+        }
+        
+        /** Renders bazar list on the Bazar page */
         function renderBazarPage() {
             const tbody = document.querySelector('#bazar-table tbody');
             tbody.innerHTML = '';
             if (messData.bazarList && messData.bazarList.length > 0) {
-                 messData.bazarList.forEach(bazar => {
+                 const sortedBazar = [...messData.bazarList].sort((a,b) => b.date.toDate() - a.date.toDate());
+                 sortedBazar.forEach(bazar => {
                      const tr = document.createElement('tr');
                      tr.innerHTML = `
                         <td>${bazar.date.toDate().toLocaleDateString('bn-BD')}</td>
                         <td>${bazar.userName}</td>
-                        <td>${bazar.amount}</td>
-                        <td>${bazar.details || ''}</td>
+                        <td>৳${bazar.amount}</td>
+                        <td>${bazar.details || 'N/A'}</td>
                         <td class="admin-only">
-                            <button class="btn-sm btn-danger" data-bazar-id="${bazar.id}">মুছুন</button>
+                            <button class="btn btn-danger btn-sm" data-bazar-id="${bazar.id}"><i class="fas fa-trash"></i></button>
                         </td>
                      `;
                      tbody.appendChild(tr);
                  });
             } else {
-                tbody.innerHTML = '<tr><td colspan="5">কোনো বাজারের তথ্য নেই।</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">এখনো কোনো বাজারের তথ্য যোগ করা হয়নি।</td></tr>';
             }
-        }
-        
-        function renderMealPage() {
-            // Complex logic, placeholder for now
-            const mealTable = document.getElementById('meal-table');
-            mealTable.innerHTML = `<p>এই ফিচারটি শীঘ্রই আসছে। মিলের হিসাব বর্তমানে ডেভেলপমেন্টে আছে।</p>`;
-        }
-        
-        function renderMembersPage() {
-            // Render members table
-            const membersTbody = document.querySelector('#members-table tbody');
-            membersTbody.innerHTML = '';
-            if (messData.members && messData.members.length > 0) {
-                messData.members.forEach(member => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${member.name}</td>
-                        <td>${member.mobile || 'N/A'}</td>
-                        <td>${member.rent}</td>
-                        <td>
-                            <button class="btn-sm btn-primary" data-member-uid="${member.uid}">দেখুন</button>
-                            ${currentUser.uid === messData.adminId ? `<button class="btn-sm btn-danger" data-remove-uid="${member.uid}">সরান</button>` : ''}
-                        </td>
-                    `;
-                     membersTbody.appendChild(tr);
-                });
-            }
-            
-            // Render join requests
-            const requestsList = document.getElementById('join-requests-list');
-            requestsList.innerHTML = '';
-            if (messData.joinRequests && messData.joinRequests.length > 0) {
-                messData.joinRequests.forEach((req, index) => {
-                    const reqEl = document.createElement('div');
-                    reqEl.innerHTML = `
-                        <p><b>নাম:</b> ${req.name}, <b>মোবাইল:</b> ${req.mobile}</p>
-                        <input type="number" placeholder="মাসিক ভাড়া নির্ধারণ করুন" id="rent-${index}" required>
-                        <button class="btn btn-success" data-req-index="${index}">Approve</button>
-                        <button class="btn btn-danger" data-req-index="${index}">Reject</button>
-                        <hr>
-                    `;
-                    requestsList.appendChild(reqEl);
-                });
-            } else {
-                 requestsList.innerHTML = '<p>কোনো নতুন আবেদন নেই।</p>';
-            }
-            document.getElementById('mess-code-display').textContent = `মেস কোড: ${messData.code}`;
-        }
-
-        function renderExpensePage() {
-            document.getElementById('report-summary').classList.add('hidden');
-            document.getElementById('report-details').classList.add('hidden');
-            document.getElementById('no-report-message').classList.remove('hidden');
+            handleAdminPermissions();
         }
 
         // --- EVENT LISTENERS ---
 
-        // Navigation
-        const navLinks = document.querySelectorAll('.nav-link');
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                navLinks.forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-                
-                document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
-                document.getElementById(link.dataset.view).classList.remove('hidden');
+        /** Initialize all event listeners on app load. */
+        const initializeEventListeners = () => {
+            setupAuthToggles();
 
-                // Re-render the new active view
-                renderUI();
-            });
-        });
+            // Navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    
+                    document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+                    document.getElementById(link.dataset.view).classList.remove('hidden');
 
-        // Sidebar Toggle
-        const menuToggle = document.getElementById('menu-toggle');
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.getElementById('main-content');
-        menuToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('open');
-            sidebar.classList.toggle('closed');
-        });
-        
-        // Theme Switcher
-        const themeSwitcher = document.getElementById('theme-switcher');
-        themeSwitcher.addEventListener('click', () => {
-            const currentTheme = document.body.dataset.theme;
-            if(currentTheme === 'light') {
-                document.body.dataset.theme = 'dark';
-                themeSwitcher.classList.replace('fa-moon', 'fa-sun');
-            } else {
-                document.body.dataset.theme = 'light';
-                themeSwitcher.classList.replace('fa-sun', 'fa-moon');
-            }
-        });
-
-        // Modal Controls
-        const allModals = document.querySelectorAll('.modal');
-        const closeModalBtns = document.querySelectorAll('.close-modal, .btn-secondary');
-        closeModalBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                allModals.forEach(modal => modal.classList.remove('show'));
-            });
-        });
-
-        // Add Bazar
-        document.getElementById('add-my-bazar-btn').addEventListener('click', () => {
-            document.getElementById('bazar-modal-title').textContent = 'আমার বাজার যোগ করুন';
-            document.getElementById('bazar-form').reset();
-            document.getElementById('bazar-modal').classList.add('show');
-        });
-        document.getElementById('bazar-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const amount = parseFloat(document.getElementById('bazar-amount').value);
-            const details = document.getElementById('bazar-details').value;
-            
-            if (isNaN(amount) || amount <= 0) {
-                alert("সঠিক টাকার পরিমাণ দিন।");
-                return;
-            }
-
-            const bazarData = {
-                id: generateCode(10),
-                userId: currentUser.uid,
-                userName: currentUser.name,
-                amount: amount,
-                details: details,
-                date: new Date(),
-                type: 'bazar'
-            };
-
-            try {
-                const messDocRef = doc(db, "messes", currentMessId);
-                await updateDoc(messDocRef, {
-                    bazarList: arrayUnion(bazarData)
+                    renderAllComponents(); // Re-render the new active view
                 });
-                document.getElementById('bazar-modal').classList.remove('show');
-            } catch (error) {
-                alert("বাজার যোগ করতে সমস্যা হয়েছে।");
-                console.error(error);
-            }
-        });
-        
-        // --- ADMIN ACTIONS ---
-        document.getElementById('members-view').addEventListener('click', async (e) => {
-            // Approve Join Request
-            if (e.target.matches('.btn-success')) {
-                const index = e.target.dataset.reqIndex;
-                const rent = document.getElementById(`rent-${index}`).value;
-                if (!rent || isNaN(rent)) {
-                    alert("দয়া করে সঠিক ভাড়া নির্ধারণ করুন।");
-                    return;
+            });
+
+            // Sidebar Toggle
+            document.getElementById('menu-toggle').addEventListener('click', () => {
+                document.getElementById('sidebar').classList.toggle('open');
+                document.getElementById('sidebar').classList.toggle('closed');
+            });
+            
+            // Theme Switcher
+            document.getElementById('theme-switcher').addEventListener('click', () => {
+                const body = document.body;
+                const switcher = document.getElementById('theme-switcher');
+                if(body.dataset.theme === 'light') {
+                    body.dataset.theme = 'dark';
+                    switcher.classList.replace('fa-moon', 'fa-sun');
+                } else {
+                    body.dataset.theme = 'light';
+                    switcher.classList.replace('fa-sun', 'fa-moon');
                 }
-                const request = messData.joinRequests[index];
+            });
+
+            // Handle today's meal checkbox changes
+            document.querySelector('.meal-options').addEventListener('change', async (e) => {
+                if(e.target.type === 'checkbox') {
+                    const type = e.target.dataset.mealType;
+                    const isChecked = e.target.checked;
+                    
+                    const todayKey = formatDateKey(new Date());
+                    const mealField = `meals.${todayKey}.${currentUser.uid}.${type}`;
+                    
+                    try {
+                        const messDocRef = doc(db, "messes", currentMessId);
+                        await updateDoc(messDocRef, {
+                            [mealField]: isChecked
+                        });
+                    } catch (error) {
+                        console.error("Error updating meal:", error);
+                        alert("মিল আপডেট করতে সমস্যা হয়েছে।");
+                        // Revert checkbox on error
+                        e.target.checked = !isChecked;
+                    }
+                }
+            });
+
+            // Add Bazar Button
+            document.getElementById('add-bazar-btn').addEventListener('click', () => {
+                const isAdmin = currentUser.uid === messData.adminId;
+                const modal = document.getElementById('bazar-modal');
+                const title = document.getElementById('bazar-modal-title');
+                const memberSelectGroup = document.getElementById('bazar-member-select-group');
+                const memberSelect = document.getElementById('bazar-member-select');
+
+                document.getElementById('bazar-form').reset();
+                title.textContent = 'নতুন বাজার যোগ করুন';
+
+                if(isAdmin) {
+                    memberSelectGroup.classList.remove('hidden');
+                    memberSelect.innerHTML = '';
+                    messData.members.forEach(member => {
+                        const option = document.createElement('option');
+                        option.value = member.uid;
+                        option.textContent = member.name;
+                        if(member.uid === currentUser.uid) option.selected = true;
+                        memberSelect.appendChild(option);
+                    });
+                } else {
+                    memberSelectGroup.classList.add('hidden');
+                }
+                modal.classList.add('show');
+            });
+
+            // Bazar Form Submission
+            document.getElementById('bazar-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                showLoader();
+                const amount = parseFloat(document.getElementById('bazar-amount').value);
+                const details = document.getElementById('bazar-details').value;
+
+                let bazarForUserId, bazarForUserName;
+                const isAdmin = currentUser.uid === messData.adminId;
+
+                if (isAdmin && document.getElementById('bazar-member-select-group').style.display !== 'none') {
+                    const select = document.getElementById('bazar-member-select');
+                    bazarForUserId = select.value;
+                    bazarForUserName = select.options[select.selectedIndex].text;
+                } else {
+                    bazarForUserId = currentUser.uid;
+                    bazarForUserName = currentUser.name;
+                }
                 
-                // This is a complex operation, ideally done with a cloud function
-                // For client-side, we simulate creating a user. 
-                // NOTE: THIS IS NOT SECURE. A malicious user could abuse this.
-                // A better way is for the applicant to sign up first, then request to join.
-                // But following the request: we add them as a member.
-                
-                const newMemberData = {
-                    uid: generateCode(10), // This should be a real auth UID
-                    name: request.name,
-                    mobile: request.mobile,
-                    email: request.email, // We can't set password here
-                    rent: parseFloat(rent),
-                    joinDate: new Date()
+                const bazarData = {
+                    id: generateCode(10), userId: bazarForUserId, userName: bazarForUserName,
+                    amount: amount, details: details, date: new Date(), type: 'bazar'
                 };
 
                 try {
                     const messDocRef = doc(db, "messes", currentMessId);
-                    await updateDoc(messDocRef, {
-                        members: arrayUnion(newMemberData),
-                        joinRequests: arrayRemove(request)
-                    });
-                    alert(`${request.name} কে সদস্য হিসেবে যোগ করা হয়েছে।`);
-                } catch(err) {
-                    console.error(err);
-                    alert("সদস্য যোগ করতে সমস্যা হয়েছে।");
+                    await updateDoc(messDocRef, { bazarList: arrayUnion(bazarData) });
+                    document.getElementById('bazar-modal').classList.remove('show');
+                } catch (error) {
+                    console.error("Error adding bazar:", error);
+                    alert("বাজার যোগ করতে সমস্যা হয়েছে।");
+                } finally {
+                    hideLoader();
                 }
-            }
-            // Reject Join Request
-            if (e.target.matches('.btn-danger[data-req-index]')) {
-                const index = e.target.dataset.reqIndex;
-                const request = messData.joinRequests[index];
+            });
+
+            // Admin Edit Meal Form Submission
+            document.getElementById('admin-edit-meal-form').addEventListener('submit', async(e) => {
+                e.preventDefault();
+                showLoader();
+                const dateKey = document.getElementById('admin-meal-edit-date').value;
+                const uid = document.getElementById('admin-meal-edit-uid').value;
+                
+                const newMeals = {
+                    morning: document.getElementById('admin-meal-morning').checked,
+                    noon: document.getElementById('admin-meal-noon').checked,
+                    night: document.getElementById('admin-meal-night').checked
+                };
+
+                const updatePath = `meals.${dateKey}.${uid}`;
                 try {
                     const messDocRef = doc(db, "messes", currentMessId);
-                    await updateDoc(messDocRef, {
-                        joinRequests: arrayRemove(request)
-                    });
-                     alert(`${request.name} এর আবেদন বাতিল করা হয়েছে।`);
-                } catch(err) {
-                    console.error(err);
+                    await updateDoc(messDocRef, { [updatePath]: newMeals });
+                    document.getElementById('admin-edit-meal-modal').classList.remove('show');
+                } catch(error) {
+                    console.error("Failed to update meal for member:", error);
+                    alert("সদস্যের মিল আপডেট করতে সমস্যা হয়েছে।");
+                } finally {
+                    hideLoader();
                 }
-            }
-        });
-        
-        document.getElementById('calculate-report-btn').addEventListener('click', () => {
-            document.getElementById('other-bills-modal').classList.add('show');
-        });
-
-        document.getElementById('other-bills-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const maid = parseFloat(document.getElementById('maid-bill').value) || 0;
-            const current = parseFloat(document.getElementById('current-bill').value) || 0;
-            const wifi = parseFloat(document.getElementById('wifi-bill').value) || 0;
-            const other = parseFloat(document.getElementById('other-bill').value) || 0;
-            
-            const otherBills = { maid, current, wifi, other };
-
-            generateMonthlyReport(otherBills);
-            document.getElementById('other-bills-modal').classList.remove('show');
-        });
-
-        function generateMonthlyReport(otherBills) {
-            const totalBazar = messData.bazarList.reduce((acc, b) => acc + b.amount, 0);
-            const totalMeals = 100; // FIXME: This needs to be calculated from meal data
-            if(totalMeals === 0) {
-                alert("এই মাসে কোনো মিলের হিসাব পাওয়া যায়নি।");
-                return;
-            }
-            const mealRate = totalBazar / totalMeals;
-
-            const totalOtherCosts = otherBills.maid + otherBills.current + otherBills.wifi + otherBills.other;
-            const perMemberOtherCost = totalOtherCosts / messData.members.length;
-            
-            // Display summary
-            document.getElementById('summary-total-bazar').textContent = `৳${totalBazar.toFixed(2)}`;
-            document.getElementById('summary-total-meal').textContent = totalMeals;
-            document.getElementById('summary-meal-rate').textContent = `৳${mealRate.toFixed(2)}`;
-            document.getElementById('summary-other-costs').textContent = `৳${totalOtherCosts.toFixed(2)}`;
-            
-            // Display details table
-            const detailsTbody = document.querySelector('#expense-details-table tbody');
-            detailsTbody.innerHTML = '';
-            
-            messData.members.forEach(member => {
-                const memberMeals = 30; // FIXME: Get actual meals for member
-                const memberBazar = messData.bazarList.filter(b => b.userId === member.uid).reduce((acc, b) => acc + b.amount, 0);
-
-                const foodCost = mealRate * memberMeals;
-                const totalCost = foodCost + member.rent + perMemberOtherCost;
-                const finalDue = totalCost - memberBazar;
-
-                const tr = document.createElement('tr');
-                let dueText = finalDue > 0 ? `দেবে: ৳${finalDue.toFixed(2)}` : `পাবে: ৳${Math.abs(finalDue).toFixed(2)}`;
-                if (finalDue === 0) dueText = 'হিসাব সমান';
-
-                tr.innerHTML = `
-                    <td>${member.name}</td>
-                    <td>${memberMeals}</td>
-                    <td>${foodCost.toFixed(2)}</td>
-                    <td>${(member.rent + perMemberOtherCost).toFixed(2)}</td>
-                    <td>${totalCost.toFixed(2)}</td>
-                    <td>${memberBazar.toFixed(2)}</td>
-                    <td><b>${dueText}</b></td>
-                    <td>
-                        <button class="btn-sm btn-success send-email-btn" data-member-name="${member.name}" data-member-email="${member.email}" data-report-text="${dueText}"><i class="fas fa-envelope"></i></button>
-                        <button class="btn-sm btn-info send-whatsapp-btn" data-member-mobile="${member.mobile}" data-report-text="${dueText}"><i class="fab fa-whatsapp"></i></button>
-                    </td>
-                `;
-                detailsTbody.appendChild(tr);
             });
-            
-            document.getElementById('report-summary').classList.remove('hidden');
-            document.getElementById('report-details').classList.remove('hidden');
-            document.getElementById('no-report-message').classList.add('hidden');
-        }
-        
-        document.getElementById('expense-details-table').addEventListener('click', e => {
-            if(e.target.closest('.send-email-btn')) {
-                const button = e.target.closest('.send-email-btn');
-                const name = button.dataset.memberName;
-                const email = button.dataset.memberEmail;
-                const reportText = button.dataset.reportText;
-                const monthName = new Date().toLocaleString('bn-BD', { month: 'long' });
-                
-                const fullMessage = `প্রিয় ${name},\n\n${monthName} মাসের আপনার মেসের হিসাব:\n\nআপনার স্ট্যাটাস: ${reportText}\n\nধন্যবাদ,\nInfinity Nest`;
-                
-                sendEmail(name, email, fullMessage);
-            }
-            if(e.target.closest('.send-whatsapp-btn')) {
-                const button = e.target.closest('.send-whatsapp-btn');
-                const mobile = button.dataset.memberMobile;
-                const reportText = button.dataset.reportText;
-                const monthName = new Date().toLocaleString('bn-BD', { month: 'long' });
-                const fullMessage = `প্রিয় ${button.dataset.memberName},\n${monthName} মাসের আপনার মেসের হিসাব:\n\nআপনার স্ট্যাটাস: *${reportText}*\n\nধন্যবাদ,\nInfinity Nest`;
 
-                sendWhatsApp(mobile, fullMessage);
-            }
-        });
-
-        function sendEmail(name, email, message) {
-            // আপনাকে EmailJS এ একাউন্ট খুলে নিচের তথ্যগুলো পূরণ করতে হবে
-            const serviceID = 'YOUR_SERVICE_ID';
-            const templateID = 'YOUR_TEMPLATE_ID';
-            const publicKey = 'YOUR_PUBLIC_KEY';
-            
-            if (serviceID === 'YOUR_SERVICE_ID') {
-                alert("EmailJS সেটআপ করা হয়নি। কোডের মধ্যে আপনার EmailJS তথ্য দিন।");
-                return;
-            }
-            
-            const templateParams = {
-                to_name: name,
-                to_email: email,
-                from_name: messData.name,
-                message: message
-            };
-            
-            emailjs.send(serviceID, templateID, templateParams, publicKey)
-                .then(() => {
-                    alert(`${name}-কে সফলভাবে ইমেইল পাঠানো হয়েছে!`);
-                }, (err) => {
-                    alert(`ইমেইল পাঠাতে সমস্যা হয়েছে: ${JSON.stringify(err)}`);
+            // Close Modals
+            document.querySelectorAll('.close-modal, .btn-secondary').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.modal').forEach(modal => modal.classList.remove('show'));
                 });
-        }
-        
-        function sendWhatsApp(mobile, message) {
-            if (!mobile) {
-                alert("এই সদস্যের মোবাইল নম্বর পাওয়া যায়নি।");
-                return;
-            }
-            // Assuming mobile number is in local format, we add country code for international format
-            let whatsappNumber = mobile.startsWith('+88') ? mobile : `+88${mobile}`;
-            whatsappNumber = whatsappNumber.replace(/\D/g, ''); // remove all non-digits
+            });
+        };
+
+        // --- ADMIN SPECIFIC FUNCTIONS ---
+
+        /** Handles click on a meal cell by an admin */
+        function handleAdminMealCellClick(e) {
+            const cell = e.currentTarget;
+            const date = cell.dataset.date;
+            const uid = cell.dataset.uid;
             
-            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
+            const member = messData.members.find(m => m.uid === uid);
+            if (!member) return;
+
+            const modal = document.getElementById('admin-edit-meal-modal');
+            const title = document.getElementById('admin-meal-modal-title');
+            
+            title.textContent = `${member.name} এর মিল (${new Date(date).toLocaleDateString('bn-BD')})`;
+            
+            document.getElementById('admin-meal-edit-date').value = date;
+            document.getElementById('admin-meal-edit-uid').value = uid;
+            
+            const currentMeals = messData.meals?.[date]?.[uid] || { morning: false, noon: false, night: false };
+            document.getElementById('admin-meal-morning').checked = currentMeals.morning;
+            document.getElementById('admin-meal-noon').checked = currentMeals.noon;
+            document.getElementById('admin-meal-night').checked = currentMeals.night;
+
+            modal.classList.add('show');
         }
+
+        // --- App Entry Point ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeEventListeners();
+            // Auth state listener will take over from here
+        });
 
         // [END] JAVASCRIPT LOGIC
     </script>
